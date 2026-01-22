@@ -1,0 +1,75 @@
+---
+title: Building with AI - Lessons Learned
+date: 2024-02-28
+category: notes
+tags: [AI, Development, Best Practices, LLM]
+excerpt: Key insights and lessons from integrating AI into production applications.
+---
+
+# Building with AI: Lessons Learned
+
+After spending the past year integrating various AI services into production applications, I've collected some valuable lessons that I wish I knew from the start.
+
+## Lesson 1: Prompts Are Code
+
+Treat your prompts like code. Version control them, test them, and review them.
+
+```typescript
+// Bad: Inline prompts scattered everywhere
+const response = await ai.complete("Summarize this: " + text);
+
+// Good: Centralized, versioned prompts
+import { SUMMARIZE_PROMPT_V2 } from '@/prompts/summarization';
+
+const response = await ai.complete(
+  SUMMARIZE_PROMPT_V2.format({ content: text, maxLength: 100 })
+);
+```
+
+## Lesson 2: Plan for Latency
+
+AI responses are inherently slower than traditional API calls. Design your UX around this:
+
+- Use streaming responses when possible
+- Implement optimistic UI updates
+- Show meaningful loading states
+- Cache aggressively
+
+## Lesson 3: Handle Failures Gracefully
+
+AI services can fail, hallucinate, or return unexpected results. Always have fallbacks:
+
+```typescript
+const getAIResponse = async (prompt: string): Promise<string> => {
+  try {
+    const response = await aiService.complete(prompt);
+    if (!validateResponse(response)) {
+      throw new Error('Invalid response');
+    }
+    return response;
+  } catch (error) {
+    logger.warn('AI fallback triggered', { error, prompt });
+    return getFallbackResponse(prompt);
+  }
+};
+```
+
+## Lesson 4: Cost Management
+
+AI API calls add up quickly. Implement:
+
+- Rate limiting per user
+- Token usage tracking
+- Caching layers
+- Budget alerts
+
+## Lesson 5: User Education
+
+Users need to understand:
+- AI can make mistakes
+- Results may vary
+- Human review is still valuable
+
+## Conclusion
+
+AI is a powerful tool, but it requires thoughtful integration. The best AI features feel like magic to users while being rock-solid behind the scenes.

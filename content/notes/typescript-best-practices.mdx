@@ -1,0 +1,108 @@
+---
+title: TypeScript Best Practices
+date: 2024-01-15
+category: notes
+tags: [TypeScript, Best Practices, Development]
+excerpt: Essential TypeScript patterns and practices for building maintainable applications.
+---
+
+# TypeScript Best Practices
+
+A collection of TypeScript patterns and practices I've refined over years of building production applications.
+
+## 1. Prefer `unknown` Over `any`
+
+```typescript
+// Bad: Using any
+const processData = (data: any) => {
+  return data.value; // No type safety
+};
+
+// Good: Using unknown with type guards
+const processData = (data: unknown) => {
+  if (isValidData(data)) {
+    return data.value; // Type-safe access
+  }
+  throw new Error('Invalid data');
+};
+```
+
+## 2. Use Discriminated Unions
+
+```typescript
+// Powerful pattern for handling different states
+type AsyncState<T> = 
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: Error };
+
+const renderContent = <T>(state: AsyncState<T>) => {
+  switch (state.status) {
+    case 'idle':
+      return <IdleState />;
+    case 'loading':
+      return <LoadingSpinner />;
+    case 'success':
+      return <Content data={state.data} />;
+    case 'error':
+      return <ErrorMessage error={state.error} />;
+  }
+};
+```
+
+## 3. Leverage Const Assertions
+
+```typescript
+// Create literal types from objects
+const ROUTES = {
+  home: '/',
+  about: '/about',
+  blog: '/blog',
+} as const;
+
+type Route = typeof ROUTES[keyof typeof ROUTES];
+// Type: "/" | "/about" | "/blog"
+```
+
+## 4. Use Template Literal Types
+
+```typescript
+type EventName = 'click' | 'focus' | 'blur';
+type Handler = `on${Capitalize<EventName>}`;
+// Type: "onClick" | "onFocus" | "onBlur"
+```
+
+## 5. Prefer Interfaces for Objects
+
+```typescript
+// Interfaces are extendable and have better error messages
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface AdminUser extends User {
+  permissions: string[];
+}
+```
+
+## 6. Use Branded Types for Type Safety
+
+```typescript
+// Prevent mixing up similar types
+type UserId = string & { readonly brand: unique symbol };
+type OrderId = string & { readonly brand: unique symbol };
+
+const createUserId = (id: string): UserId => id as UserId;
+const createOrderId = (id: string): OrderId => id as OrderId;
+
+// Now TypeScript prevents accidental misuse
+const getUser = (id: UserId) => { /* ... */ };
+getUser(createOrderId('123')); // Error!
+```
+
+## Conclusion
+
+These patterns have saved me countless hours of debugging and made my codebases significantly more maintainable.

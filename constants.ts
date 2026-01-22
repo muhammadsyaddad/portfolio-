@@ -1,69 +1,208 @@
 export interface PortfolioItem {
   label: string;
   value: string;
+  slug: string;
+  category: "portfolio" | "notes" | "canvas";
 }
 
-export const PERSONAL_DETAILS: PortfolioItem[] = [
+export const PERSONAL_DETAILS: { label: string; value: string }[] = [
   { label: "ROLE", value: "CREATIVE DEVELOPER" },
-  { label: "FOCUS", value: "FRONTEND & UI/UX" },
-  { label: "LOCATION", value: "WORLDWIDE" },
-  { label: "STACK", value: "TYPESCRIPT, REACT, NEXT.JS, TAILWIND" },
-  { label: "CONTACT", value: "WORK@MUHAMMADSYADDAD.DEV" },
+  { label: "FOCUS", value: "IDK I LIKE PROGRAMMING AD GENERAL" },
+  { label: "LIFE", value: "IND." },
+  { label: "STACK", value: "TYPESCRIPT, NEXT.JS, TAILWIND, RUST" },
+  { label: "CONTACT", value: "muhamsyaddad@gmail.com" },
   { label: "SOCIAL", value: "GITHUB / LINKEDIN / INSTAGRAM" },
 ];
 
-// Expanded data to demonstrate scrolling
-export const PROJECT_DATA: PortfolioItem[] = [
-  { label: "2024", value: "AI CREATIVE SUITE DASHBOARD" },
-  { label: "2024", value: "IMMERSIVE WEBGL LANDING PAGE" },
-  { label: "2023", value: "FINTECH MOBILE APP (REACT NATIVE)" },
-  { label: "2023", value: "LUXURY FASHION E-COMMERCE" },
-  { label: "2022", value: "CORPORATE DESIGN SYSTEM" },
-  { label: "2022", value: "REAL-TIME DATA VISUALIZATION" },
-  { label: "2021", value: "CRYPTO WALLET INTERFACE" },
-  { label: "2021", value: "NFT MARKETPLACE LAUNCHPAD" },
-  { label: "2020", value: "INTERACTIVE MUSIC FESTIVAL SITE" },
-  { label: "2020", value: "SAAS ANALYTICS PLATFORM" },
-  { label: "2019", value: "AR PRODUCT VISUALIZER" },
-  { label: "2019", value: "DIGITAL AGENCY PORTFOLIO" },
-  { label: "2018", value: "E-LEARNING MANAGEMENT SYSTEM" },
-  { label: "2018", value: "HOSPITALITY BOOKING ENGINE" },
-  { label: "2017", value: "SMART HOME CONTROLLER APP" },
-  { label: "2017", value: "AUTOMOTIVE CONFIGURATOR" },
-  { label: "2016", value: "FASHION EDITORIAL BLOG" },
-  { label: "2016", value: "REAL ESTATE LISTING PORTAL" },
-  { label: "2015", value: "INDIE GAME LANDING PAGE" },
-  { label: "2015", value: "PHOTOGRAPHY SHOWCASE" },
-  // Extended history
-  { label: "2014", value: "VINTAGE CLOTHING STORE" },
-  { label: "2014", value: "LOCAL BAND WEBSITE" },
-  { label: "2013", value: "UNIVERSITY EVENT PORTAL" },
-  { label: "2013", value: "LIBRARY CATALOG SYSTEM" },
-  { label: "2012", value: "PERSONAL BLOG THEME" },
-  { label: "2012", value: "WEATHER WIDGET APP" },
-  { label: "2011", value: "RETRO FLASH GAME SITE" },
-  { label: "2011", value: "COMMUNITY FORUM MOD" },
-  { label: "2010", value: "SIMPLE TODO LIST" },
-  { label: "2010", value: "CALCULATOR UTILITY" },
-  // Repeated purely for scroll length
-  { label: "ARCHIVE", value: "LEGACY PROJECT ALPHA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT BETA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT GAMMA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT DELTA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT EPSILON" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT ZETA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT ETA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT THETA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT IOTA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT KAPPA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT LAMBDA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT MU" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT NU" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT XI" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT OMICRON" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT PI" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT RHO" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT SIGMA" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT TAU" },
-  { label: "ARCHIVE", value: "LEGACY PROJECT UPSILON" },
+// Portfolio items with slugs for blog navigation
+export const PORTFOLIO_DATA: PortfolioItem[] = [
+  {
+    label: "2024",
+    value: "AI CREATIVE SUITE DASHBOARD",
+    slug: "ai-creative-suite-dashboard",
+    category: "portfolio",
+  },
+  {
+    label: "2024",
+    value: "IMMERSIVE WEBGL LANDING PAGE",
+    slug: "immersive-webgl-landing-page",
+    category: "portfolio",
+  },
+  {
+    label: "2023",
+    value: "FINTECH MOBILE APP (REACT NATIVE)",
+    slug: "fintech-mobile-app",
+    category: "portfolio",
+  },
+  {
+    label: "2023",
+    value: "LUXURY FASHION E-COMMERCE",
+    slug: "luxury-fashion-ecommerce",
+    category: "portfolio",
+  },
+  {
+    label: "2022",
+    value: "CORPORATE DESIGN SYSTEM",
+    slug: "corporate-design-system",
+    category: "portfolio",
+  },
+  {
+    label: "2022",
+    value: "REAL-TIME DATA VISUALIZATION",
+    slug: "realtime-data-visualization",
+    category: "portfolio",
+  },
+  {
+    label: "2021",
+    value: "CRYPTO WALLET INTERFACE",
+    slug: "crypto-wallet-interface",
+    category: "portfolio",
+  },
+  {
+    label: "2021",
+    value: "NFT MARKETPLACE LAUNCHPAD",
+    slug: "nft-marketplace-launchpad",
+    category: "portfolio",
+  },
+  {
+    label: "2020",
+    value: "INTERACTIVE MUSIC FESTIVAL SITE",
+    slug: "interactive-music-festival",
+    category: "portfolio",
+  },
+  {
+    label: "2020",
+    value: "SAAS ANALYTICS PLATFORM",
+    slug: "saas-analytics-platform",
+    category: "portfolio",
+  },
 ];
+
+export const NOTES_DATA: PortfolioItem[] = [
+  {
+    label: "2024",
+    value: "BUILDING WITH AI: LESSONS LEARNED",
+    slug: "building-with-ai",
+    category: "notes",
+  },
+  {
+    label: "2024",
+    value: "TYPESCRIPT BEST PRACTICES",
+    slug: "typescript-best-practices",
+    category: "notes",
+  },
+  {
+    label: "2023",
+    value: "REACT PERFORMANCE OPTIMIZATION",
+    slug: "react-performance-optimization",
+    category: "notes",
+  },
+  {
+    label: "2023",
+    value: "CSS GRID VS FLEXBOX DEEP DIVE",
+    slug: "css-grid-vs-flexbox",
+    category: "notes",
+  },
+  {
+    label: "2022",
+    value: "WEB ACCESSIBILITY GUIDE",
+    slug: "web-accessibility-guide",
+    category: "notes",
+  },
+  {
+    label: "2022",
+    value: "STATE MANAGEMENT PATTERNS",
+    slug: "state-management-patterns",
+    category: "notes",
+  },
+  {
+    label: "2021",
+    value: "DESIGN TOKENS EXPLAINED",
+    slug: "design-tokens-explained",
+    category: "notes",
+  },
+  {
+    label: "2021",
+    value: "MICRO-FRONTEND ARCHITECTURE",
+    slug: "micro-frontend-architecture",
+    category: "notes",
+  },
+  {
+    label: "2020",
+    value: "JAMSTACK DEPLOYMENT STRATEGIES",
+    slug: "jamstack-deployment",
+    category: "notes",
+  },
+  {
+    label: "2020",
+    value: "WEBGL FUNDAMENTALS",
+    slug: "webgl-fundamentals",
+    category: "notes",
+  },
+];
+
+export const CANVAS_DATA: PortfolioItem[] = [
+  {
+    label: "2024",
+    value: "GENERATIVE ART EXPERIMENTS",
+    slug: "generative-art-experiments",
+    category: "canvas",
+  },
+  {
+    label: "2024",
+    value: "3D TYPOGRAPHY STUDIES",
+    slug: "3d-typography-studies",
+    category: "canvas",
+  },
+  {
+    label: "2023",
+    value: "SHADER PLAYGROUND",
+    slug: "shader-playground",
+    category: "canvas",
+  },
+  {
+    label: "2023",
+    value: "MOTION DESIGN EXPLORATIONS",
+    slug: "motion-design-explorations",
+    category: "canvas",
+  },
+  {
+    label: "2022",
+    value: "ABSTRACT DATA VISUALIZATIONS",
+    slug: "abstract-data-viz",
+    category: "canvas",
+  },
+  {
+    label: "2022",
+    value: "INTERACTIVE INSTALLATIONS",
+    slug: "interactive-installations",
+    category: "canvas",
+  },
+  {
+    label: "2021",
+    value: "AUDIO REACTIVE VISUALS",
+    slug: "audio-reactive-visuals",
+    category: "canvas",
+  },
+  {
+    label: "2021",
+    value: "PARTICLE SYSTEMS STUDY",
+    slug: "particle-systems-study",
+    category: "canvas",
+  },
+  {
+    label: "2020",
+    value: "CREATIVE CODING SKETCHES",
+    slug: "creative-coding-sketches",
+    category: "canvas",
+  },
+  {
+    label: "2020",
+    value: "PROCEDURAL TEXTURES",
+    slug: "procedural-textures",
+    category: "canvas",
+  },
+];
+
+// Combined PROJECT_DATA for backward compatibility
+export const PROJECT_DATA = [...PORTFOLIO_DATA, ...NOTES_DATA, ...CANVAS_DATA];
