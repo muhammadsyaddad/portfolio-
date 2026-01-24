@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Lenis from "lenis";
-import { PORTFOLIO_DATA, NOTES_DATA, CANVAS_DATA, PERSONAL_DETAILS, PortfolioItem } from "@/constants";
+import { PORTFOLIO_DATA, NOTES_DATA, CANVAS_DATA, PERSONAL_DETAILS, SOCIAL_LINKS, PortfolioItem } from "@/constants";
 
 const HomePage: React.FC = () => {
   // Refs for scroll synchronization
@@ -271,11 +271,39 @@ const HomePage: React.FC = () => {
                     <span className="opacity-60 mb-1 text-xs">
                       {item.label}
                     </span>
-                    <span className="opacity-90 font-bold truncate">
-                      {item.value}
-                    </span>
+                    {item.link ? (
+                      <a
+                        href={item.link}
+                        className="opacity-90 font-bold truncate hover:opacity-100 transition-opacity"
+                        target={item.link.startsWith("mailto:") ? undefined : "_blank"}
+                        rel="noopener noreferrer"
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      <span className="opacity-90 font-bold truncate">
+                        {item.value}
+                      </span>
+                    )}
                   </div>
                 ))}
+                {/* Social Links */}
+                <div className="flex flex-col">
+                  <span className="opacity-60 mb-1 text-xs">SOCIAL</span>
+                  <div className="flex gap-3">
+                    {SOCIAL_LINKS.map((social, index) => (
+                      <a
+                        key={index}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="opacity-90 font-bold hover:opacity-100 transition-opacity"
+                      >
+                        {social.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

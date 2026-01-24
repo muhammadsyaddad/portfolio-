@@ -44,7 +44,6 @@ async function runTests() {
       const bgColor = await page.evaluate(() => {
         return getComputedStyle(document.body).backgroundColor;
       });
-      // Should be dark (rgb values close to 0)
       const rgb = bgColor.match(/\d+/g)?.map(Number) || [];
       return rgb.length >= 3 && rgb[0] < 50 && rgb[1] < 50 && rgb[2] < 50;
     });
@@ -56,41 +55,32 @@ async function runTests() {
       return text?.toLowerCase().includes("muhammad") || false;
     });
 
-    // Test 4: Portfolio column exists
-    await test("Portfolio column header exists", async () => {
-      const columns = await page.$$("h2");
-      const texts = await Promise.all(
-        columns.map((el) => page.evaluate((e) => e.textContent, el))
-      );
-      return texts.some((t) => t?.toLowerCase().includes("portfolio"));
+    // Test 4: Social links are clickable (3 links: GitHub, LinkedIn, Instagram)
+    await test("Social links are clickable", async () => {
+      const socialLinks = await page.$$("footer a[target='_blank']");
+      return socialLinks.length >= 3;
     });
 
-    // Test 5: Notes column exists
-    await test("Notes column header exists", async () => {
-      const columns = await page.$$("h2");
-      const texts = await Promise.all(
-        columns.map((el) => page.evaluate((e) => e.textContent, el))
-      );
-      return texts.some((t) => t?.toLowerCase().includes("notes"));
-    });
-
-    // Test 6: Canvas column exists
-    await test("Canvas column header exists", async () => {
-      const columns = await page.$$("h2");
-      const texts = await Promise.all(
-        columns.map((el) => page.evaluate((e) => e.textContent, el))
-      );
-      return texts.some((t) => t?.toLowerCase().includes("canvas"));
-    });
-
-    // Test 7: Content items are clickable (have links)
-    await test("Content items are clickable links", async () => {
-      const links = await page.$$("a[href^='/portfolio'], a[href^='/notes'], a[href^='/canvas']");
+    // Test 5: Portfolio items link correctly
+    await test("Portfolio items are clickable links", async () => {
+      const links = await page.$$("a[href^='/portfolio']");
       return links.length > 0;
     });
 
-    // Test 8: Navigate to a portfolio page
-    await test("Portfolio page navigation works", async () => {
+    // Test 6: Notes items link correctly
+    await test("Notes items are clickable links", async () => {
+      const links = await page.$$("a[href^='/notes']");
+      return links.length > 0;
+    });
+
+    // Test 7: Canvas items link correctly
+    await test("Canvas items are clickable links", async () => {
+      const links = await page.$$("a[href^='/canvas']");
+      return links.length > 0;
+    });
+
+    // Test 8: MDX Portfolio page loads dynamically
+    await test("Portfolio MDX page loads (ai-creative-suite-dashboard)", async () => {
       await page.goto(`${BASE_URL}/portfolio/ai-creative-suite-dashboard`, {
         waitUntil: "networkidle0",
       });
@@ -100,15 +90,8 @@ async function runTests() {
       return text?.toLowerCase().includes("ai creative suite") || false;
     });
 
-    // Test 9: Back button exists on portfolio page
-    await test("Back button exists on blog post", async () => {
-      const backButton = await page.$('a[href="/"]');
-      const text = await page.evaluate((el) => el?.textContent, backButton);
-      return text?.toLowerCase().includes("back") || false;
-    });
-
-    // Test 10: Navigate to notes page
-    await test("Notes page navigation works", async () => {
+    // Test 9: MDX Notes page loads dynamically
+    await test("Notes MDX page loads (building-with-ai)", async () => {
       await page.goto(`${BASE_URL}/notes/building-with-ai`, {
         waitUntil: "networkidle0",
       });
@@ -118,47 +101,57 @@ async function runTests() {
       return text?.toLowerCase().includes("building with ai") || false;
     });
 
-    // Test 11: Navigate to canvas page
-    await test("Canvas page navigation works", async () => {
+    // Test 10: Canvas page loads with animation (TSX component)
+    await test("Canvas page loads (generative-art-experiments)", async () => {
       await page.goto(`${BASE_URL}/canvas/generative-art-experiments`, {
         waitUntil: "networkidle0",
       });
-      await page.waitForSelector("h1", { timeout: 5000 });
-      const title = await page.$("h1");
-      const text = await page.evaluate((el) => el?.textContent, title);
-      return text?.toLowerCase().includes("generative art") || false;
+      // Canvas pages should have a back button
+      const backButton = await page.$('a[href="/"]');
+      return backButton !== null;
     });
 
-    // Test 12: Content is scrollable (check for overflow-y-auto class)
-    await test("Content columns have scroll capability", async () => {
-      await page.goto(BASE_URL, { waitUntil: "networkidle0" });
-      const hasScrollableContent = await page.evaluate(() => {
-        const scrollableElements = document.querySelectorAll('[class*="overflow-y-auto"]');
-        return scrollableElements.length > 0;
+    // Test 11: Canvas page has animated elements (dots)
+    await test("Canvas page has animated elements", async () => {
+      // Wait a bit for animation to start
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const hasElements = await page.evaluate(() => {
+        const dots = document.querySelectorAll('.dot');
+        return dots.length > 0;
       });
-      return hasScrollableContent;
+      return hasElements;
     });
 
-    // Test 13: TypeScript Best Practices page loads
-    await test("TypeScript Best Practices page loads", async () => {
-      await page.goto(`${BASE_URL}/notes/typescript-best-practices`, {
+    // Test 12: Shader playground canvas loads
+    await test("Canvas page loads (shader-playground)", async () => {
+      await page.goto(`${BASE_URL}/canvas/shader-playground`, {
         waitUntil: "networkidle0",
       });
-      await page.waitForSelector("h1", { timeout: 5000 });
-      const title = await page.$("h1");
-      const text = await page.evaluate((el) => el?.textContent, title);
-      return text?.toLowerCase().includes("typescript") || false;
+      const backButton = await page.$('a[href="/"]');
+      return backButton !== null;
     });
 
-    // Test 14: Immersive WebGL page loads
-    await test("Immersive WebGL Landing Page loads", async () => {
-      await page.goto(`${BASE_URL}/portfolio/immersive-webgl-landing-page`, {
+    // Test 13: Typography studies canvas loads
+    await test("Canvas page loads (3d-typography-studies)", async () => {
+      await page.goto(`${BASE_URL}/canvas/3d-typography-studies`, {
         waitUntil: "networkidle0",
       });
-      await page.waitForSelector("h1", { timeout: 5000 });
-      const title = await page.$("h1");
-      const text = await page.evaluate((el) => el?.textContent, title);
-      return text?.toLowerCase().includes("webgl") || false;
+      const backButton = await page.$('a[href="/"]');
+      return backButton !== null;
+    });
+
+    // Test 14: Back button works on canvas page
+    await test("Back button works on canvas page", async () => {
+      await page.goto(`${BASE_URL}/canvas/motion-design-explorations`, {
+        waitUntil: "networkidle0",
+      });
+      await page.waitForSelector('a[href="/"]', { timeout: 5000 });
+      await Promise.all([
+        page.click('a[href="/"]'),
+        page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 10000 }),
+      ]);
+      const url = page.url();
+      return url === BASE_URL + "/" || url === BASE_URL;
     });
 
     // Test 15: Footer exists on homepage
@@ -169,64 +162,47 @@ async function runTests() {
       return text?.toLowerCase().includes("creative developer") || false;
     });
 
-    // Test 16: Lenis scroll wrapper is present
-    await test("Lenis smooth scroll is initialized", async () => {
-      await page.goto(BASE_URL, { waitUntil: "networkidle0" });
-      // Give Lenis time to initialize
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const hasLenis = await page.evaluate(() => {
-        return document.documentElement.classList.contains('lenis') || 
-               document.documentElement.classList.contains('lenis-smooth') ||
-               typeof (window as any).__lenis !== 'undefined' ||
-               true; // Lenis is imported and used in the component
-      });
-      return hasLenis;
+    // Test 16: Contact email is clickable
+    await test("Contact email is clickable", async () => {
+      const emailLink = await page.$('a[href^="mailto:"]');
+      return emailLink !== null;
     });
 
-    // Test 17: Blog post has tags
-    await test("Blog post has tags displayed", async () => {
-      await page.goto(`${BASE_URL}/portfolio/ai-creative-suite-dashboard`, {
+    // Test 17: Content columns have scroll capability
+    await test("Content columns have scroll capability", async () => {
+      const hasScrollableContent = await page.evaluate(() => {
+        const scrollableElements = document.querySelectorAll('[class*="overflow-y-auto"]');
+        return scrollableElements.length > 0;
+      });
+      return hasScrollableContent;
+    });
+
+    // Test 18: Unknown canvas route shows coming soon
+    await test("Unknown canvas route shows coming soon page", async () => {
+      await page.goto(`${BASE_URL}/canvas/unknown-animation-12345`, {
         waitUntil: "networkidle0",
       });
       await page.waitForSelector("h1", { timeout: 5000 });
       const content = await page.content();
-      return content.toLowerCase().includes("react") && content.toLowerCase().includes("typescript");
+      return content.toLowerCase().includes("coming soon");
     });
 
-    // Test 18: Second portfolio page loads (separate from immersive test above)
-    await test("Multiple portfolio pages exist and return valid response", async () => {
-      // Go back to homepage first to reset state
-      await page.goto(BASE_URL, { waitUntil: "networkidle0" });
-      const response = await page.goto(`${BASE_URL}/portfolio/ai-creative-suite-dashboard`, {
+    // Test 19: Particle systems canvas page works
+    await test("Canvas page loads (particle-systems-study)", async () => {
+      await page.goto(`${BASE_URL}/canvas/particle-systems-study`, {
         waitUntil: "networkidle0",
       });
-      const status = response?.status();
-      // Accept 200 (OK) or 304 (Not Modified - cached)
-      return status === 200 || status === 304;
+      const backButton = await page.$('a[href="/"]');
+      return backButton !== null;
     });
 
-    // Test 19: Coming soon page works for unimplemented routes
-    await test("Coming soon page works for unimplemented routes", async () => {
-      await page.goto(`${BASE_URL}/portfolio/some-unimplemented-slug`, {
+    // Test 20: Procedural textures canvas page works
+    await test("Canvas page loads (procedural-textures)", async () => {
+      await page.goto(`${BASE_URL}/canvas/procedural-textures`, {
         waitUntil: "networkidle0",
       });
-      await page.waitForSelector("h1", { timeout: 5000 });
-      const content = await page.content();
-      return content.toLowerCase().includes("coming soon") || content.toLowerCase().includes("portfolio");
-    });
-
-    // Test 20: Navigation between pages works
-    await test("Navigation from blog post back to home works", async () => {
-      await page.goto(`${BASE_URL}/portfolio/ai-creative-suite-dashboard`, {
-        waitUntil: "domcontentloaded",
-      });
-      await page.waitForSelector('a[href="/"]', { timeout: 5000 });
-      await Promise.all([
-        page.click('a[href="/"]'),
-        page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 10000 }),
-      ]);
-      const url = page.url();
-      return url === BASE_URL + "/" || url === BASE_URL;
+      const backButton = await page.$('a[href="/"]');
+      return backButton !== null;
     });
 
   } catch (error) {

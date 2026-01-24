@@ -1,0 +1,147 @@
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+
+// Import all MDX files dynamically
+const portfolioModules = import.meta.glob("/content/portfolio/*.mdx");
+const notesModules = import.meta.glob("/content/notes/*.mdx");
+
+interface MDXModule {
+  default: React.ComponentType;
+  frontmatter?: {
+    title?: string;
+    date?: string;
+    tags?: string[];
+  };
+}
+
+interface MDXPageProps {
+  category: "portfolio" | "notes";
+}
+
+const MDXPage: React.FC<MDXPageProps> = ({ category }) => {
+  const { slug } = useParams<{ slug: string }>();
+  const [Content, setContent] = useState<React.ComponentType | null>(null);
+  const [frontmatter, setFrontmatter] = useState<{
+    title?: string;
+    date?: string;
+    tags?: string[];
+  }>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const loadMDX = async () => {
+      setLoading(true);
+      setError(false);
+
+      const modules = category === "portfolio" ? portfolioModules : notesModules;
+      const path = `/content/${category}/${slug}.mdx`;
+
+      if (modules[path]) {
+        try {
+          const module = (await modules[path]()) as MDXModule;
+          setContent(() => module.default);
+          setFrontmatter(module.frontmatter || {});
+        } catch (e) {
+          console.error("Failed to load MDX:", e);
+          setError(true);
+        }
+      } else {
+        setError(true);
+      }
+
+      setLoading(false);
+    };
+
+    loadMDX();
+  }, [category, slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-mono flex items-center justify-center">
+        <div className="text-sm uppercase tracking-wider opacity-60">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error || !Content) {
+    return (
+      <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-mono flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold tracking-wider mb-4 uppercase">
+            Content Not Found
+          </h1>
+          <p className="opacity-60 uppercase tracking-wider text-sm mb-8">
+            This page doesn't exist yet
+          </p>
+          <Link
+            to="/"
+            className="text-sm opacity-60 hover:opacity-100 uppercase tracking-wider transition-opacity"
+          >
+            &larr; Back to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const title = frontmatter.title || slug?.replace(/-/g, " ").toUpperCase() || "";
+  const date = frontmatter.date || "";
+  const tags = frontmatter.tags || [];
+
+  return (
+    <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-mono">
+      {/* Header */}
+      <header className="w-full max-w-[1200px] mx-auto p-6 md:p-12 lg:p-16">
+        <Link
+          to="/"
+          className="back-button inline-flex items-center text-sm opacity-60 hover:opacity-100 uppercase tracking-wider mb-8"
+        >
+          <span className="mr-2">&larr;</span>
+          BACK TO HOME
+        </Link>
+
+        <div className="mb-8">
+          <span className="text-xs opacity-50 uppercase tracking-wider">
+            {category} {date && `/ ${date}`}
+          </span>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-wider mt-2 uppercase">
+            {title}
+          </h1>
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {tags.map((tag, i) => (
+                <span
+                  key={i}
+                  className="text-xs px-2 py-1 bg-white/10 rounded uppercase tracking-wider"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* Content */}
+      <main className="w-full max-w-[1200px] mx-auto px-6 md:px-12 lg:px-16 pb-16">
+        <article className="blog-content prose prose-invert max-w-none">
+          <Content />
+        </article>
+      </main>
+
+      {/* Footer */}
+      <footer className="w-full max-w-[1200px] mx-auto p-6 md:p-12 lg:p-16 border-t border-white/10">
+        <Link
+          to="/"
+          className="back-button inline-flex items-center text-sm opacity-60 hover:opacity-100 uppercase tracking-wider"
+        >
+          <span className="mr-2">&larr;</span>
+          BACK TO HOME
+        </Link>
+      </footer>
+    </div>
+  );
+};
+
+export default MDXPage;

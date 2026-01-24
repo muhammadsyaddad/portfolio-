@@ -19,5 +19,9 @@ export default defineConfig(({ mode }) => {
         "@": path.resolve(__dirname, "."),
       },
     },
+    // Enable glob imports for dynamic MDX loading
+    optimizeDeps: {
+      include: ["react", "react-dom", "react-router-dom"],
+    },
   };
 });
