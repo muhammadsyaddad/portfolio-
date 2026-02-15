@@ -11,12 +11,39 @@ const CLOUDS = [
 
 // ── Trees ───────────────────────────────────────────────────────
 const TREES = [
-  // Pine
-  ["   ^   ", "  /|\\  ", " /_|_\\ ", "   |   "],
-  // Round
-  ["  .%.  ", " (%%%) ", "  )|(  ", "   |   "],
-  // Willow
-  ["  ,*,  ", " /|||\\", "  |||  ", "   |   "],
+  // Pine – tall triangular conifer
+  [
+    "     ^     ",
+    "    /|\\    ",
+    "   /|||\\   ",
+    "  /|||||\\  ",
+    " /___|___\\ ",
+    "     |     ",
+    "     |     ",
+    "    /|\\    ",
+  ],
+  // Oak – wide foliage dome
+  [
+    "    .=.    ",
+    "  .(%%%).  ",
+    " (%%%%%%%)",
+    "  (%%%%%) ",
+    "   ')('   ",
+    "    ||    ",
+    "    ||    ",
+    "   /||\\   ",
+  ],
+  // Willow – cascading droopy branches
+  [
+    "   .-.   ",
+    "  (   )  ",
+    " /|||||\\",
+    " |||||||| ",
+    "  \\|||/  ",
+    "   |||   ",
+    "    |    ",
+    "   /|\\   ",
+  ],
 ];
 
 // ── Animation frames ────────────────────────────────────────────
@@ -24,6 +51,20 @@ const BIRD_FRAMES = ["~v~", "~^~", "~-~"];
 const BUTTERFLY_FRAMES = ["}{", ")(", "||", ")("];
 const STAR_CHARS = [".", "+", "*", ".", " ", " "];
 const FLOWER_HEADS = ["@", "*", "o", "%", "&"];
+
+// ── Tall grass shapes (stamped on terrain surface) ──────────────
+const GRASS_SHAPES = [
+  ["\\|/"],
+  [" | ", "\\|/"],
+  ["|||"],
+];
+
+// ── Rock shapes ─────────────────────────────────────────────────
+const ROCK_SHAPES = [
+  [".__.", "(__)"],
+  [" /\\ ", "/  \\"],
+  ["(O)"],
+];
 
 // ─── Types ──────────────────────────────────────────────────────
 interface Mover {
@@ -56,6 +97,14 @@ interface Flower {
   phase: number;
 }
 interface TreeInst {
+  x: number;
+  shape: string[];
+}
+interface GrassClump {
+  x: number;
+  shape: string[];
+}
+interface Rock {
   x: number;
   shape: string[];
 }
@@ -101,6 +150,8 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
     stars: Star[];
     trees: TreeInst[];
     flowers: Flower[];
+    grassClumps: GrassClump[];
+    rocks: Rock[];
     terrainH: number[];
     cols: number;
     rows: number;
@@ -112,6 +163,8 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
     stars: [],
     trees: [],
     flowers: [],
+    grassClumps: [],
+    rocks: [],
     terrainH: [],
     cols: 0,
     rows: 0,
@@ -194,10 +247,10 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
 
     // ── Trees ───────────────────────────────────────
     s.trees = [];
-    const treeCount = Math.min(3, Math.max(1, Math.floor(cols / 14)));
+    const treeCount = Math.min(3, Math.max(1, Math.floor(cols / 18)));
     const treeSpacing = cols / (treeCount + 1);
     for (let i = 0; i < treeCount; i++) {
-      const tx = Math.floor(treeSpacing * (i + 1)) - 3;
+      const tx = Math.floor(treeSpacing * (i + 1)) - 5;
       s.trees.push({
         x: Math.max(0, tx),
         shape: TREES[i % TREES.length],
@@ -208,7 +261,7 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
     s.flowers = [];
     const taken = new Set<number>();
     for (const t of s.trees) {
-      for (let dx = -1; dx < 8; dx++) taken.add(t.x + dx);
+      for (let dx = -2; dx < 13; dx++) taken.add(t.x + dx);
     }
     const flowerCount = Math.max(8, Math.floor(cols / 3));
     for (let i = 0; i < flowerCount; i++) {
@@ -220,6 +273,34 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
         h: 1 + Math.floor(rand() * 2),
         head: FLOWER_HEADS[Math.floor(rand() * FLOWER_HEADS.length)],
         phase: rand() * Math.PI * 2,
+      });
+    }
+
+    // ── Grass clumps ────────────────────────────────
+    s.grassClumps = [];
+    const grassCount = Math.max(4, Math.floor(cols / 6));
+    for (let i = 0; i < grassCount; i++) {
+      const gx = 1 + Math.floor(rand() * (cols - 4));
+      if (taken.has(gx) || taken.has(gx + 1) || taken.has(gx + 2)) continue;
+      taken.add(gx);
+      taken.add(gx + 1);
+      taken.add(gx + 2);
+      s.grassClumps.push({
+        x: gx,
+        shape: GRASS_SHAPES[Math.floor(rand() * GRASS_SHAPES.length)],
+      });
+    }
+
+    // ── Rocks ───────────────────────────────────────
+    s.rocks = [];
+    const rockCount = Math.max(2, Math.floor(cols / 15));
+    for (let i = 0; i < rockCount; i++) {
+      const rx = 2 + Math.floor(rand() * (cols - 6));
+      if (taken.has(rx) || taken.has(rx + 1) || taken.has(rx + 2) || taken.has(rx + 3)) continue;
+      for (let dx = 0; dx < 5; dx++) taken.add(rx + dx);
+      s.rocks.push({
+        x: rx,
+        shape: ROCK_SHAPES[Math.floor(rand() * ROCK_SHAPES.length)],
       });
     }
 
@@ -269,6 +350,16 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
       st.frame += st.rate;
     }
 
+    // ── Moon (crescent in upper-right sky) ──────────
+    if (variant === "full" && cols > 20 && rows > 10) {
+      const moonX = cols - 8;
+      const moonY = 2;
+      const moonLines = [" _._ ", "(   )", " `-' "];
+      for (let r = 0; r < moonLines.length; r++) {
+        stamp(g, moonLines[r], moonY + r, moonX, cols, rows);
+      }
+    }
+
     // ── Clouds ──────────────────────────────────────
     for (const cl of s.clouds) {
       const cx = Math.floor(cl.x);
@@ -302,14 +393,17 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
     }
 
     // ── Terrain fill ────────────────────────────────
+    const SURFACE_CHARS = ["~", "'", ".", "_", "-", "~", "'"];
+    const SUBSURFACE_CHARS = [".", ":", ",", "'", ";", "\""];
+    const DEEP_CHARS = [".", ":", ",", "'"];
+
     for (let c = 0; c < cols; c++) {
       const h = terrainH[c];
       if (h <= 0) continue;
       const surfaceY = groundY - h;
 
-      // Surface line with texture
+      // Surface line (top of terrain) with slope detection
       if (surfaceY >= 0 && surfaceY < rows) {
-        // Check left and right neighbors for slope direction
         const hLeft = c > 0 ? terrainH[c - 1] : h;
         const hRight = c < cols - 1 ? terrainH[c + 1] : h;
 
@@ -318,22 +412,42 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
         } else if (h > hRight + 1) {
           g[surfaceY][c] = "\\";
         } else {
-          // Flat or gentle slope surface
-          const surfChar = c % 4 === 0 ? "'" : c % 3 === 0 ? "." : "~";
-          g[surfaceY][c] = surfChar;
+          g[surfaceY][c] = SURFACE_CHARS[(c * 7 + 3) % SURFACE_CHARS.length];
         }
       }
 
-      // Fill the hill body with subtle texture
-      for (let fy = surfaceY + 1; fy < groundY; fy++) {
+      // Sub-surface rows (2-3 rows below surface) – dense texture
+      for (let dy = 1; dy <= 3; dy++) {
+        const fy = surfaceY + dy;
+        if (fy >= 0 && fy < rows && fy < groundY && g[fy][c] === EMPTY) {
+          const hash = (c * 31 + fy * 17 + dy * 7) % 10;
+          if (hash < 7) {
+            // 70% fill for sub-surface
+            g[fy][c] = SUBSURFACE_CHARS[(c * 13 + fy * 11) % SUBSURFACE_CHARS.length];
+          }
+        }
+      }
+
+      // Upper soil (rows 4-8 below surface) – medium density
+      for (let dy = 4; dy <= 8; dy++) {
+        const fy = surfaceY + dy;
+        if (fy >= 0 && fy < rows && fy < groundY && g[fy][c] === EMPTY) {
+          const hash = (c * 31 + fy * 17) % 10;
+          if (hash < 4) {
+            // 40% fill for upper soil
+            g[fy][c] = DEEP_CHARS[(c * 7 + fy * 3) % DEEP_CHARS.length];
+          }
+        }
+      }
+
+      // Lower soil (deeper rows) – lighter fill
+      for (let fy = surfaceY + 9; fy < groundY; fy++) {
         if (fy >= 0 && fy < rows && g[fy][c] === EMPTY) {
-          // Sparse interior detail - mostly empty with occasional dots
-          const hash = (c * 31 + fy * 17) % 23;
-          if (hash === 0) g[fy][c] = ".";
-          else if (hash === 5) g[fy][c] = ":";
-          else if (hash === 11) g[fy][c] = "'";
-          else if (hash === 15) g[fy][c] = ",";
-          // else stays EMPTY - keeps it airy
+          const hash = (c * 31 + fy * 17) % 10;
+          if (hash < 2) {
+            // 20% fill for deep soil
+            g[fy][c] = DEEP_CHARS[(c * 3 + fy * 7) % DEEP_CHARS.length];
+          }
         }
       }
     }
@@ -341,7 +455,7 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
     // ── Trees on terrain ────────────────────────────
     for (const tree of s.trees) {
       const treeH = tree.shape.length;
-      const cx = tree.x + 3;
+      const cx = tree.x + 5;
       const localH = cx >= 0 && cx < cols ? terrainH[cx] : 0;
       const baseY = groundY - localH;
       const startY = baseY - treeH;
@@ -358,6 +472,7 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
       const headY = baseY - fl.h;
       const hx = fl.x + sway;
 
+      // Flower head
       if (headY >= 0 && headY < rows && hx >= 0 && hx < cols) {
         if (
           g[headY][hx] === EMPTY ||
@@ -367,10 +482,53 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
           g[headY][hx] = fl.head;
         }
       }
+
+      // Leaves on taller flowers (h >= 2)
+      if (fl.h >= 2) {
+        const leafY = headY + 1;
+        if (leafY >= 0 && leafY < rows) {
+          const lx = fl.x - 1;
+          const rx = fl.x + 1;
+          if (lx >= 0 && lx < cols && g[leafY][lx] === EMPTY) {
+            g[leafY][lx] = "/";
+          }
+          if (rx >= 0 && rx < cols && g[leafY][rx] === EMPTY) {
+            g[leafY][rx] = "\\";
+          }
+        }
+      }
+
+      // Stem
       for (let sy = headY + 1; sy < baseY; sy++) {
         if (sy >= 0 && sy < rows && fl.x >= 0 && fl.x < cols) {
-          g[sy][fl.x] = "|";
+          if (g[sy][fl.x] === EMPTY || g[sy][fl.x] === "." || g[sy][fl.x] === "~") {
+            g[sy][fl.x] = "|";
+          }
         }
+      }
+    }
+
+    // ── Grass clumps on terrain ─────────────────────
+    for (const gc of s.grassClumps) {
+      const cx = gc.x + 1;
+      const localH = cx >= 0 && cx < cols ? terrainH[cx] : 0;
+      const baseY = groundY - localH;
+      const shapeH = gc.shape.length;
+      const startY = baseY - shapeH;
+      for (let r = 0; r < shapeH; r++) {
+        stamp(g, gc.shape[r], startY + r, gc.x, cols, rows);
+      }
+    }
+
+    // ── Rocks on terrain ────────────────────────────
+    for (const rk of s.rocks) {
+      const cx = rk.x + Math.floor(rk.shape[0].length / 2);
+      const localH = cx >= 0 && cx < cols ? terrainH[cx] : 0;
+      const baseY = groundY - localH;
+      const shapeH = rk.shape.length;
+      const startY = baseY - shapeH;
+      for (let r = 0; r < shapeH; r++) {
+        stamp(g, rk.shape[r], startY + r, rk.x, cols, rows);
       }
     }
 
@@ -405,7 +563,7 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
     }
 
     return g.map((row) => row.join("")).join("\n");
-  }, []);
+  }, [variant]);
 
   useEffect(() => {
     const container = containerRef.current;
