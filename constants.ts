@@ -23,16 +23,18 @@ export const SOCIAL_LINKS: SocialLink[] = [
   { label: "INSTAGRAM", url: "https://instagram.com/muhammadsyaddad" },
 ];
 
+export const PROJETCT_PROUDMOST: SocialLink[] = [
+  { label: "EVAL", url: "https://github.com/muhammadsyaddad/eval" },
+];
+
 export const PERSONAL_DETAILS: PersonalDetail[] = [
   { label: "FOCUS", value: "IDK I LIKE PROGRAMMING IN GENERAL" },
-  { label: "LIFE", value: "IND." },
   { label: "STACK", value: "TYPESCRIPT, NEXT.JS, TAILWIND, RUST" },
   {
     label: "CONTACT",
     value: "muhamsyaddad@gmail.com",
     link: "mailto:muhamsyaddad@gmail.com",
   },
-  // { label: "ROLE", value: "CREATIVE DEVELOPER" },
 ];
 
 // Portfolio items with slugs for blog navigation
