@@ -1,5 +1,6 @@
 export interface PortfolioItem {
   label: string;
+  date?: string;
   value: string;
   slug: string;
   category: "portfolio" | "notes" | "canvas";
@@ -41,6 +42,7 @@ export const PERSONAL_DETAILS: PersonalDetail[] = [
 export const PORTFOLIO_DATA: PortfolioItem[] = [
   {
     label: "2025",
+    date: "2025-01-12",
     value: "ERR YEAH",
     slug: "creative-suite-dashboard",
     category: "portfolio",
@@ -68,16 +70,18 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
 export const NOTES_DATA: PortfolioItem[] = [
   {
     label: "2024",
+    date: "2024-08-03",
     value: "exampleee",
     slug: "building-with-",
     category: "notes",
   },
-  // {
-  //   label: "2024",
-  //   value: "TYPESCRIPT BEST PRACTICES",
-  //   slug: "typescript-best-practices",
-  //   category: "notes",
-  // },
+  {
+    label: "2024",
+    date: "2024-05-19",
+    value: "TYPESCRIPT BEST PRACTICES",
+    slug: "typescript-best-practices",
+    category: "notes",
+  },
   // {
   //   label: "2023",
   //   value: "REACT PERFORMANCE OPTIMIZATION",
@@ -131,6 +135,7 @@ export const NOTES_DATA: PortfolioItem[] = [
 export const CANVAS_DATA: PortfolioItem[] = [
   {
     label: "2024",
+    date: "2024-02-11",
     value: "JUST AN EXAMPLE",
     slug: "generative-art-experiments",
     category: "canvas",

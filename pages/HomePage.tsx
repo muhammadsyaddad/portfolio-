@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import { Link } from "react-router-dom";
 import Lenis from "lenis";
 import {
@@ -10,6 +16,7 @@ import {
   PROJETCT_PROUDMOST,
   PortfolioItem,
 } from "@/constants";
+import AsciiGarden from "@/components/AsciiGarden";
 
 const HomePage: React.FC = () => {
   // Refs for scroll synchronization
@@ -102,14 +109,87 @@ const HomePage: React.FC = () => {
   const ROW_CLASS = "h-6 mb-2 flex items-center";
   const TEXT_CLASS =
     "text-sm leading-none tracking-tight truncate cursor-pointer transition-all duration-300";
+  const DATE_TEXT_CLASS =
+    "text-[10px] leading-none tracking-[0.2em] opacity-60 truncate";
   const COL_CLASS =
     "h-full overflow-y-auto no-scrollbar pb-64 pt-8 pointer-events-auto scroll-smooth";
 
-  // Render content column
-  const renderColumn = (
-    data: PortfolioItem[],
+  const timelineRows = useMemo(() => {
+    type TimelineRow = {
+      key: string;
+      label?: string;
+      date?: string;
+      portfolio?: PortfolioItem;
+      notes?: PortfolioItem;
+      canvas?: PortfolioItem;
+    };
+
+    const map = new Map<string, TimelineRow>();
+    const order: string[] = [];
+
+    const addItems = (
+      items: PortfolioItem[],
+      column: "portfolio" | "notes" | "canvas",
+    ) => {
+      items.forEach((item, index) => {
+        const baseKey =
+          item.date || item.label || item.slug || `${column}-${index}`;
+        const key = item.date ? item.date : `${baseKey}-${column}`;
+
+        if (!map.has(key)) {
+          map.set(key, {
+            key,
+            label: item.label,
+            date: item.date,
+          });
+          order.push(key);
+        }
+
+        const row = map.get(key);
+        if (row) {
+          row[column] = item;
+          if (!row.label && item.label) {
+            row.label = item.label;
+          }
+          if (!row.date && item.date) {
+            row.date = item.date;
+          }
+        }
+      });
+    };
+
+    addItems(PORTFOLIO_DATA, "portfolio");
+    addItems(NOTES_DATA, "notes");
+    addItems(CANVAS_DATA, "canvas");
+
+    const rows = order
+      .map((key) => map.get(key))
+      .filter(Boolean) as TimelineRow[];
+
+    rows.sort((a, b) => {
+      const aTime = a.date ? new Date(a.date).getTime() : -Infinity;
+      const bTime = b.date ? new Date(b.date).getTime() : -Infinity;
+      if (Number.isNaN(aTime) && Number.isNaN(bTime)) {
+        return 0;
+      }
+      if (Number.isNaN(aTime)) {
+        return 1;
+      }
+      if (Number.isNaN(bTime)) {
+        return -1;
+      }
+      return bTime - aTime;
+    });
+
+    return rows;
+  }, []);
+
+  type TimelineRow = (typeof timelineRows)[number];
+
+  const renderTimelineColumn = (
     ref: React.RefObject<HTMLDivElement | null>,
-    columnName: string,
+    columnName: "portfolio" | "notes" | "canvas",
+    getItem: (row: TimelineRow) => PortfolioItem | undefined,
   ) => (
     <div
       ref={ref}
@@ -118,18 +198,28 @@ const HomePage: React.FC = () => {
       onMouseLeave={handleMouseLeave}
       className={COL_CLASS}
     >
-      {data.map((item, i) => (
-        <div key={i} className={ROW_CLASS}>
-          <Link
-            to={`/${item.category}/${item.slug}`}
-            className={`${TEXT_CLASS} clickable-item ${getRowClass(i)} hover:opacity-100`}
-            onMouseEnter={() => handleItemHover(i)}
-            onMouseLeave={handleItemLeave}
-          >
-            {item.value}
-          </Link>
-        </div>
-      ))}
+      {timelineRows.map((row, i) => {
+        const item = getItem(row);
+
+        return (
+          <div key={row.key} className={ROW_CLASS}>
+            {item ? (
+              <Link
+                to={`/${item.category}/${item.slug}`}
+                className={`${TEXT_CLASS} clickable-item ${getRowClass(i)} hover:opacity-100`}
+                onMouseEnter={() => handleItemHover(i)}
+                onMouseLeave={handleItemLeave}
+              >
+                {item.value}
+              </Link>
+            ) : (
+              <span className={`${TEXT_CLASS} cursor-default opacity-40`}>
+                -
+              </span>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 
@@ -173,8 +263,7 @@ const HomePage: React.FC = () => {
       {/* MAIN CONTENT */}
       <main className="flex-grow overflow-hidden min-h-0 w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 relative z-0">
         <div className="h-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4">
-          <div className="hidden lg:block lg:col-span-3"></div>
-
+          <AsciiGarden variant="full" />
           <div className="lg:col-span-9 h-full min-h-0 relative">
             {/* MOBILE (< lg) */}
             <div className={`lg:hidden ${COL_CLASS}`}>
@@ -187,7 +276,21 @@ const HomePage: React.FC = () => {
                     key={i}
                     className="mb-4 text-xs md:text-sm leading-snug tracking-tight"
                   >
-                    <div className="opacity-60 mb-1">{item.label}</div>
+                    {/*<div className="opacity-60 mb-1">{item.label}</div>*/}
+                    {item.label ? (
+                      <div className="opacity-60 mb-1">
+                        <span className="mr-2">{item.label}</span>
+                        {item.date ? (
+                          <span className="text-[10px] tracking-[0.2em] opacity-60">
+                            {item.date}
+                          </span>
+                        ) : null}
+                      </div>
+                    ) : (
+                      <div className="flex-grow flex items-center pr-4">
+                        <div className="w-full border-t border-white h-0" />
+                      </div>
+                    )}
                     <Link
                       to={`/portfolio/${item.slug}`}
                       className="opacity-90 hover:opacity-100 clickable-item block"
@@ -243,25 +346,30 @@ const HomePage: React.FC = () => {
                 className={COL_CLASS}
                 onMouseEnter={() => setActiveColumn("date")}
               >
-                {getCurrentData().map((item, i) => (
+                {timelineRows.map((row, i) => (
                   <div key={i} className={ROW_CLASS}>
-                    <span
-                      className={`${TEXT_CLASS} cursor-default ${getRowClass(i, true)}`}
-                    >
-                      {item.label}
-                    </span>
+                    {/* Jika item.label ada, tampilkan label. Jika tidak, tampilkan garis */}
+                    <div className="flex items-center justify-end w-full gap-4">
+                      <span className={DATE_TEXT_CLASS}>
+                        {row.date ? row.date : "-"}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
 
               {/* PORTFOLIO COLUMN */}
-              {renderColumn(PORTFOLIO_DATA, portfolioRef, "portfolio")}
+              {renderTimelineColumn(
+                portfolioRef,
+                "portfolio",
+                (row) => row.portfolio,
+              )}
 
               {/* NOTES COLUMN */}
-              {renderColumn(NOTES_DATA, notesRef, "notes")}
+              {renderTimelineColumn(notesRef, "notes", (row) => row.notes)}
 
               {/* CANVAS COLUMN */}
-              {renderColumn(CANVAS_DATA, canvasRef, "canvas")}
+              {renderTimelineColumn(canvasRef, "canvas", (row) => row.canvas)}
             </div>
           </div>
         </div>
@@ -272,7 +380,7 @@ const HomePage: React.FC = () => {
         <div className="absolute top-0 left-0 w-full h-24 -translate-y-full bg-gradient-to-t from-[var(--bg-color)] to-transparent pointer-events-none" />
         <div className="w-full max-w-[1800px] mx-auto p-6 md:p-12 lg:p-16 pt-2 md:pt-4">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4">
-            <div className="hidden lg:block lg:col-span-3"></div>
+            <AsciiGarden variant="footer" />
             <div className="lg:col-span-9 border-t border-white/20 pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm leading-snug tracking-tight">
                 {PERSONAL_DETAILS.map((item, index) => (
