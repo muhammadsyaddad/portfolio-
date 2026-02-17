@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { NOTES_DATA, PORTFOLIO_DATA } from "@/constants";
+import { NOTES_DATA, SAINS_DATA } from "@/constants";
 
 // Import all MDX files dynamically
-const portfolioModules = import.meta.glob("/content/portfolio/*.mdx");
+const portfolioModules = import.meta.glob("/content/sains/*.mdx");
 const notesModules = import.meta.glob("/content/notes/*.mdx");
 
 interface MDXModule {
@@ -11,7 +11,7 @@ interface MDXModule {
 }
 
 interface MDXPageProps {
-  category: "portfolio" | "notes";
+  category: "notes" | "sains";
 }
 
 const MDXPage: React.FC<MDXPageProps> = ({ category }) => {
@@ -25,8 +25,7 @@ const MDXPage: React.FC<MDXPageProps> = ({ category }) => {
       setLoading(true);
       setError(false);
 
-      const modules =
-        category === "portfolio" ? portfolioModules : notesModules;
+      const modules = category === "sains" ? portfolioModules : notesModules;
       const path = `/content/${category}/${slug}.mdx`;
 
       if (modules[path]) {
@@ -78,7 +77,7 @@ const MDXPage: React.FC<MDXPageProps> = ({ category }) => {
     );
   }
 
-  const items = category === "portfolio" ? PORTFOLIO_DATA : NOTES_DATA;
+  const items = category === "sains" ? SAINS_DATA : NOTES_DATA;
   const currentItem = items.find((item) => item.slug === slug);
   const title =
     currentItem?.value || slug?.replace(/-/g, " ").toUpperCase() || "";

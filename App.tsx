@@ -4,16 +4,7 @@ import HomePage from "@/pages/HomePage";
 import MDXPage from "@/components/MDXPage";
 
 // Canvas pages - import directly since they are TSX components
-import GenerativeArtExperiments from "@/pages/canvas/GenerativeArtExperiments";
-import TypographyStudies from "@/pages/canvas/TypographyStudies";
-import ShaderPlayground from "@/pages/canvas/ShaderPlayground";
-import MotionDesignExplorations from "@/pages/canvas/MotionDesignExplorations";
-import AbstractDataViz from "@/pages/canvas/AbstractDataViz";
-import InteractiveInstallations from "@/pages/canvas/InteractiveInstallations";
-import AudioReactiveVisuals from "@/pages/canvas/AudioReactiveVisuals";
-import ParticleSystemsStudy from "@/pages/canvas/ParticleSystemsStudy";
-import CreativeCodingSketches from "@/pages/canvas/CreativeCodingSketches";
-import ProceduralTextures from "@/pages/canvas/ProceduralTextures";
+// import GenerativeArtExperiments from "@/pages/canvas/GenerativeArtExperiments";
 
 // Placeholder component for routes that don't have content yet
 const ComingSoon: React.FC<{ title: string }> = ({ title }) => (
@@ -43,34 +34,17 @@ const App: React.FC = () => {
         <Route path="/" element={<HomePage />} />
 
         {/* Portfolio Routes - Dynamic MDX loading */}
-        <Route
-          path="/portfolio/:slug"
-          element={<MDXPage category="portfolio" />}
-        />
+        <Route path="/sains/:slug" element={<MDXPage category="sains" />} />
 
         {/* Notes Routes - Dynamic MDX loading */}
-        <Route
-          path="/notes/:slug"
-          element={<MDXPage category="notes" />}
-        />
+        <Route path="/notes/:slug" element={<MDXPage category="notes" />} />
 
+        {/*this is example for the canva code*/}
         {/* Canvas Routes - Static TSX components with animations */}
-        <Route path="/canvas/generative-art-experiments" element={<GenerativeArtExperiments />} />
-        <Route path="/canvas/3d-typography-studies" element={<TypographyStudies />} />
-        <Route path="/canvas/shader-playground" element={<ShaderPlayground />} />
-        <Route path="/canvas/motion-design-explorations" element={<MotionDesignExplorations />} />
-        <Route path="/canvas/abstract-data-viz" element={<AbstractDataViz />} />
-        <Route path="/canvas/interactive-installations" element={<InteractiveInstallations />} />
-        <Route path="/canvas/audio-reactive-visuals" element={<AudioReactiveVisuals />} />
-        <Route path="/canvas/particle-systems-study" element={<ParticleSystemsStudy />} />
-        <Route path="/canvas/creative-coding-sketches" element={<CreativeCodingSketches />} />
-        <Route path="/canvas/procedural-textures" element={<ProceduralTextures />} />
-
-        {/* Fallback for unknown canvas routes */}
-        <Route
-          path="/canvas/:slug"
-          element={<ComingSoon title="Canvas Experiment" />}
-        />
+        {/*<Route
+          path="/canvas/generative-art-experiments"
+          element={<GenerativeArtExperiments />}
+        />*/}
 
         {/* 404 */}
         <Route path="*" element={<ComingSoon title="Page Not Found" />} />

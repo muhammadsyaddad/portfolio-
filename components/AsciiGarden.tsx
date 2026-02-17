@@ -135,9 +135,7 @@ function srand(seed: number) {
 }
 
 // ─── Component ──────────────────────────────────────────────────
-const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
-  variant = "full",
-}) => {
+const AsciiGarden: React.FC = () => {
   const preRef = useRef<HTMLPreElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef(0);
@@ -173,75 +171,38 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
 
   const initScene = useCallback((cols: number, rows: number) => {
     const s = stateRef.current;
-    const isFooter = variant === "footer";
     s.cols = cols;
     s.rows = rows;
-    s.groundY = rows - 2;
+    s.groundY = rows - 1;
 
     const rand = srand(cols * 7 + rows * 13);
 
-    // ── Clouds ──────────────────────────────────────
+    // ── Clouds (disabled – terrain-only mode) ───────
     s.clouds = [];
-    if (!isFooter) {
-      const cloudCount = cols > 35 ? 3 : 2;
-      for (let i = 0; i < cloudCount; i++) {
-        s.clouds.push({
-          x: Math.floor(rand() * cols),
-          y: 1 + i * 2,
-          speed: 0.03 + rand() * 0.04,
-          shape: CLOUDS[i % CLOUDS.length],
-        });
-      }
-    }
 
-    // ── Stars ───────────────────────────────────────
+    // ── Stars (disabled – terrain-only mode) ────────
     s.stars = [];
-    if (!isFooter) {
-      const skyRows = Math.floor(rows * 0.3);
-      const starCount = Math.max(3, Math.floor((cols * skyRows) / 50));
-      for (let i = 0; i < starCount; i++) {
-        s.stars.push({
-          x: Math.floor(rand() * cols),
-          y: Math.floor(rand() * skyRows),
-          frame: Math.floor(rand() * STAR_CHARS.length),
-          rate: 0.015 + rand() * 0.03,
-        });
-      }
-    }
 
-    // ── Birds ───────────────────────────────────────
-    const birdY = Math.floor(rows * 0.22);
+    // ── Birds (disabled – terrain-only mode) ────────
     s.birds = [];
-    if (!isFooter) {
-      s.birds = [
-        { x: Math.floor(cols * 0.2), y: birdY, speed: 0.22, frame: 0, dir: 1 },
-        {
-          x: Math.floor(cols * 0.7),
-          y: birdY + 2,
-          speed: 0.18,
-          frame: 1.5,
-          dir: -1,
-        },
-      ];
-    }
 
     // ── Terrain ─────────────────────────────────────
     // Generate rolling hills using multiple overlapping sine waves
-    // The terrain occupies the lower ~60% of the screen
+    // The terrain occupies the full height of the canvas
     s.terrainH = new Array(cols).fill(0);
-    const maxTerrainH = Math.floor(rows * (isFooter ? 0.8 : 0.55));
+    const maxTerrainH = Math.floor(rows * 0.9);
 
     // Layer multiple sine waves for organic terrain
     for (let c = 0; c < cols; c++) {
       let h = 0;
       // Base rolling wave
-      h += Math.sin((c / cols) * Math.PI * 2.5 + 0.5) * maxTerrainH * 0.35;
+      h += Math.sin((c / cols) * Math.PI * 2.5 + 0.5) * maxTerrainH * 0.25;
       // Secondary bumps
-      h += Math.sin((c / cols) * Math.PI * 5 + 1.2) * maxTerrainH * 0.2;
+      h += Math.sin((c / cols) * Math.PI * 5 + 1.2) * maxTerrainH * 0.15;
       // Small variation
-      h += Math.sin((c / cols) * Math.PI * 11 + 3.0) * maxTerrainH * 0.08;
-      // Base height (everything sits above ground)
-      h += maxTerrainH * (isFooter ? 0.6 : 0.45);
+      h += Math.sin((c / cols) * Math.PI * 11 + 3.0) * maxTerrainH * 0.06;
+      // Base height – terrain fills most of the canvas
+      h += maxTerrainH * 0.6;
       s.terrainH[c] = Math.max(2, Math.min(maxTerrainH, Math.round(h)));
     }
 
@@ -307,31 +268,29 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
     // ── Butterflies ─────────────────────────────────
     // Position butterflies just above the average terrain surface
     s.butterflies = [];
-    if (!isFooter) {
-      const avgTerrainH = s.terrainH.reduce((a, b) => a + b, 0) / cols;
-      const bfY = s.groundY - Math.floor(avgTerrainH) - 4;
-      s.butterflies = [
-        {
-          x: Math.floor(cols * 0.2),
-          y: bfY,
-          baseY: bfY,
-          speed: 0.1,
-          frame: 0,
-          dir: 1,
-          zigPhase: 0,
-        },
-        {
-          x: Math.floor(cols * 0.75),
-          y: bfY + 2,
-          baseY: bfY + 2,
-          speed: 0.08,
-          frame: 2,
-          dir: -1,
-          zigPhase: Math.PI,
-        },
-      ];
-    }
-  }, [variant]);
+    const avgTerrainH = s.terrainH.reduce((a, b) => a + b, 0) / cols;
+    const bfY = s.groundY - Math.floor(avgTerrainH) - 4;
+    s.butterflies = [
+      {
+        x: Math.floor(cols * 0.2),
+        y: bfY,
+        baseY: bfY,
+        speed: 0.1,
+        frame: 0,
+        dir: 1,
+        zigPhase: 0,
+      },
+      {
+        x: Math.floor(cols * 0.75),
+        y: bfY + 2,
+        baseY: bfY + 2,
+        speed: 0.08,
+        frame: 2,
+        dir: -1,
+        zigPhase: Math.PI,
+      },
+    ];
+  }, []);
 
   const buildFrame = useCallback((tick: number) => {
     const s = stateRef.current;
@@ -341,56 +300,13 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
     const g: string[][] = [];
     for (let r = 0; r < rows; r++) g[r] = new Array(cols).fill(EMPTY);
 
-    // ── Stars ───────────────────────────────────────
-    for (const st of s.stars) {
-      const ch = STAR_CHARS[Math.floor(st.frame) % STAR_CHARS.length];
-      if (st.y >= 0 && st.y < rows && st.x >= 0 && st.x < cols) {
-        g[st.y][st.x] = ch;
-      }
-      st.frame += st.rate;
-    }
+    // ── Stars (disabled) ──────────────────────────────
 
-    // ── Moon (crescent in upper-right sky) ──────────
-    if (variant === "full" && cols > 20 && rows > 10) {
-      const moonX = cols - 8;
-      const moonY = 2;
-      const moonLines = [" _._ ", "(   )", " `-' "];
-      for (let r = 0; r < moonLines.length; r++) {
-        stamp(g, moonLines[r], moonY + r, moonX, cols, rows);
-      }
-    }
+    // ── Moon (disabled) ─────────────────────────────
 
-    // ── Clouds ──────────────────────────────────────
-    for (const cl of s.clouds) {
-      const cx = Math.floor(cl.x);
-      for (let r = 0; r < cl.shape.length; r++) {
-        stamp(g, cl.shape[r], cl.y + r, cx, cols, rows);
-      }
-      cl.x += cl.speed;
-      const w = Math.max(...cl.shape.map((l) => l.length));
-      if (cl.x > cols + 3) cl.x = -w - 3;
-    }
+    // ── Clouds (disabled) ───────────────────────────
 
-    // ── Birds ───────────────────────────────────────
-    for (const b of s.birds) {
-      const fr = BIRD_FRAMES[Math.floor(b.frame) % BIRD_FRAMES.length];
-      if (b.y >= 0 && b.y < rows) {
-        stamp(g, fr, b.y, Math.floor(b.x), cols, rows);
-      }
-      b.x += b.speed * b.dir;
-      b.frame += 0.05;
-      if (b.dir === 1 && b.x > cols + 5) {
-        b.x = -5;
-        b.y =
-          Math.floor(rows * 0.18) +
-          Math.floor(Math.random() * Math.floor(rows * 0.1));
-      } else if (b.dir === -1 && b.x < -5) {
-        b.x = cols + 5;
-        b.y =
-          Math.floor(rows * 0.18) +
-          Math.floor(Math.random() * Math.floor(rows * 0.1));
-      }
-    }
+    // ── Birds (disabled) ────────────────────────────
 
     // ── Terrain fill ────────────────────────────────
     const SURFACE_CHARS = ["~", "'", ".", "_", "-", "~", "'"];
@@ -563,7 +479,7 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
     }
 
     return g.map((row) => row.join("")).join("\n");
-  }, [variant]);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -609,7 +525,8 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
   return (
     <div
       ref={containerRef}
-      className="hidden lg:flex lg:col-span-3 h-full overflow-hidden"
+      className="hidden lg:flex lg:col-span-3 items-end overflow-visible"
+      style={{ marginTop: "-400px", paddingTop: "400px" }}
     >
       <pre
         ref={preRef}
@@ -622,7 +539,7 @@ const AsciiGarden: React.FC<{ variant?: "full" | "footer" }> = ({
           whiteSpace: "pre",
           overflow: "hidden",
           width: "100%",
-          height: "100%",
+          margin: 0,
         }}
       />
     </div>

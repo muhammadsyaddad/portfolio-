@@ -8,7 +8,7 @@ import React, {
 import { Link } from "react-router-dom";
 import Lenis from "lenis";
 import {
-  PORTFOLIO_DATA,
+  SAINS_DATA,
   NOTES_DATA,
   CANVAS_DATA,
   PERSONAL_DETAILS,
@@ -119,7 +119,7 @@ const HomePage: React.FC = () => {
       key: string;
       label?: string;
       date?: string;
-      portfolio?: PortfolioItem;
+      sains?: PortfolioItem;
       notes?: PortfolioItem;
       canvas?: PortfolioItem;
     };
@@ -129,7 +129,7 @@ const HomePage: React.FC = () => {
 
     const addItems = (
       items: PortfolioItem[],
-      column: "portfolio" | "notes" | "canvas",
+      column: "notes" | "sains" | "canvas",
     ) => {
       items.forEach((item, index) => {
         const baseKey =
@@ -158,8 +158,8 @@ const HomePage: React.FC = () => {
       });
     };
 
-    addItems(PORTFOLIO_DATA, "portfolio");
     addItems(NOTES_DATA, "notes");
+    addItems(SAINS_DATA, "sains");
     addItems(CANVAS_DATA, "canvas");
 
     const rows = order
@@ -188,7 +188,7 @@ const HomePage: React.FC = () => {
 
   const renderTimelineColumn = (
     ref: React.RefObject<HTMLDivElement | null>,
-    columnName: "portfolio" | "notes" | "canvas",
+    columnName: "notes" | "sains" | "canvas",
     getItem: (row: TimelineRow) => PortfolioItem | undefined,
   ) => (
     <div
@@ -223,20 +223,6 @@ const HomePage: React.FC = () => {
     </div>
   );
 
-  // Get the current data based on active column
-  const getCurrentData = () => {
-    switch (activeColumn) {
-      case "portfolio":
-        return PORTFOLIO_DATA;
-      case "notes":
-        return NOTES_DATA;
-      case "canvas":
-        return CANVAS_DATA;
-      default:
-        return PORTFOLIO_DATA;
-    }
-  };
-
   return (
     <div
       ref={containerRef}
@@ -252,8 +238,8 @@ const HomePage: React.FC = () => {
           </div>
           <div className="hidden lg:grid lg:col-span-9 xl:col-span-9 grid-cols-[140px_1fr_1fr_1fr] gap-6 text-2xl font-bold tracking-wider">
             <div></div>
-            <h2>PORTFOLIO</h2>
             <h2>NOTES</h2>
+            <h2>SAINS</h2>
             <h2>CANVAS</h2>
           </div>
         </div>
@@ -263,15 +249,33 @@ const HomePage: React.FC = () => {
       {/* MAIN CONTENT */}
       <main className="flex-grow overflow-hidden min-h-0 w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 relative z-0">
         <div className="h-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4">
-          <AsciiGarden variant="full" />
+          <div className="hidden lg:block lg:col-span-3" aria-hidden="true" />
           <div className="lg:col-span-9 h-full min-h-0 relative">
             {/* MOBILE (< lg) */}
             <div className={`lg:hidden ${COL_CLASS}`}>
               <div className="mb-12">
                 <h2 className="text-lg font-bold tracking-wider mb-4 opacity-50">
+                  NOTES
+                </h2>
+                {NOTES_DATA.map((item, i) => (
+                  <div
+                    key={i}
+                    className="mb-4 text-xs md:text-sm leading-snug tracking-tight"
+                  >
+                    <Link
+                      to={`/notes/${item.slug}`}
+                      className="opacity-90 hover:opacity-100 clickable-item block"
+                    >
+                      {item.value}
+                    </Link>
+                  </div>
+                ))}
+              </div>
+              <div className="mb-12">
+                <h2 className="text-lg font-bold tracking-wider mb-4 opacity-50">
                   PORTFOLIO
                 </h2>
-                {PORTFOLIO_DATA.map((item, i) => (
+                {SAINS_DATA.map((item, i) => (
                   <div
                     key={i}
                     className="mb-4 text-xs md:text-sm leading-snug tracking-tight"
@@ -293,24 +297,6 @@ const HomePage: React.FC = () => {
                     )}
                     <Link
                       to={`/portfolio/${item.slug}`}
-                      className="opacity-90 hover:opacity-100 clickable-item block"
-                    >
-                      {item.value}
-                    </Link>
-                  </div>
-                ))}
-              </div>
-              <div className="mb-12">
-                <h2 className="text-lg font-bold tracking-wider mb-4 opacity-50">
-                  NOTES
-                </h2>
-                {NOTES_DATA.map((item, i) => (
-                  <div
-                    key={i}
-                    className="mb-4 text-xs md:text-sm leading-snug tracking-tight"
-                  >
-                    <Link
-                      to={`/notes/${item.slug}`}
                       className="opacity-90 hover:opacity-100 clickable-item block"
                     >
                       {item.value}
@@ -358,15 +344,11 @@ const HomePage: React.FC = () => {
                 ))}
               </div>
 
-              {/* PORTFOLIO COLUMN */}
-              {renderTimelineColumn(
-                portfolioRef,
-                "portfolio",
-                (row) => row.portfolio,
-              )}
-
               {/* NOTES COLUMN */}
               {renderTimelineColumn(notesRef, "notes", (row) => row.notes)}
+
+              {/* PORTFOLIO COLUMN */}
+              {renderTimelineColumn(portfolioRef, "sains", (row) => row.sains)}
 
               {/* CANVAS COLUMN */}
               {renderTimelineColumn(canvasRef, "canvas", (row) => row.canvas)}
@@ -380,7 +362,7 @@ const HomePage: React.FC = () => {
         <div className="absolute top-0 left-0 w-full h-24 -translate-y-full bg-gradient-to-t from-[var(--bg-color)] to-transparent pointer-events-none" />
         <div className="w-full max-w-[1800px] mx-auto p-6 md:p-12 lg:p-16 pt-2 md:pt-4">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4">
-            <AsciiGarden variant="footer" />
+            <AsciiGarden />
             <div className="lg:col-span-9 border-t border-white/20 pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm leading-snug tracking-tight">
                 {PERSONAL_DETAILS.map((item, index) => (
