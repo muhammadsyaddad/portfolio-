@@ -16,7 +16,6 @@ import {
   PROJETCT_PROUDMOST,
   PortfolioItem,
 } from "@/constants";
-import AsciiGarden from "@/components/AsciiGarden";
 
 const HomePage: React.FC = () => {
   // Refs for scroll synchronization
@@ -362,7 +361,7 @@ const HomePage: React.FC = () => {
         <div className="absolute top-0 left-0 w-full h-24 -translate-y-full bg-gradient-to-t from-[var(--bg-color)] to-transparent pointer-events-none" />
         <div className="w-full max-w-[1800px] mx-auto p-6 md:p-12 lg:p-16 pt-2 md:pt-4">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4">
-            <AsciiGarden />
+            <div className="hidden lg:block lg:col-span-3" aria-hidden="true" />
             <div className="lg:col-span-9 border-t border-white/20 pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm leading-snug tracking-tight">
                 {PERSONAL_DETAILS.map((item, index) => (
