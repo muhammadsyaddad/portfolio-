@@ -1,0 +1,129 @@
+# Dynamic Systems Notes
+
+## Overview
+
+This page is a single MDX example focused on advanced mathematical notation. It shows
+inline math, display equations, aligned derivations, matrices, and operators.
+
+## Notation Conventions
+
+Inline symbols like $x \in \mathbb{R}^n$, $\nabla f(x)$, and $\|x\|_2$ appear in text.
+Display blocks use double dollar signs for readability.
+
+## Spectral Decomposition
+
+Let $A \in \mathbb{R}^{n \times n}$ be symmetric. Then
+
+$$
+A = Q\Lambda Q^\top, \quad Q^\top Q = I, \quad \Lambda = \mathrm{diag}(\lambda_1,\dots,\lambda_n).
+$$
+
+The Rayleigh quotient
+
+$$
+\rho_A(x) = \frac{x^\top A x}{x^\top x}
+$$
+
+achieves its extrema at eigenvectors of $A$.
+
+## Variational Derivation
+
+Consider the constrained problem
+
+$$
+\min_{x \in \mathbb{R}^n} \; x^\top A x \quad \text{s.t.} \quad \|x\|_2^2 = 1.
+$$
+
+Lagrangian:
+
+$$
+\mathcal{L}(x,\lambda) = x^\top A x - \lambda (x^\top x - 1).
+$$
+
+Stationarity gives
+
+$$
+\nabla_x \mathcal{L} = 2Ax - 2\lambda x = 0 \Rightarrow Ax = \lambda x.
+$$
+
+## Matrix Identities
+
+The Woodbury identity:
+
+$$
+(A + UCV)^{-1} = A^{-1} - A^{-1}U(C^{-1} + VA^{-1}U)^{-1}VA^{-1}.
+$$
+
+The determinant lemma:
+
+$$
+\det(A + uv^\top) = (1 + v^\top A^{-1}u)\det(A).
+$$
+
+## Multiline Alignment
+
+$$
+\begin{aligned}
+\|Ax - b\|_2^2
+&= (Ax - b)^\top (Ax - b) \\
+&= x^\top A^\top A x - 2 b^\top A x + b^\top b.
+\end{aligned}
+$$
+
+## Probability and Information
+
+Let $p$ and $q$ be distributions on $\mathcal{X}$. The KL divergence is
+
+$$
+D_{\mathrm{KL}}(p\|q) = \int_{\mathcal{X}} p(x) \log\frac{p(x)}{q(x)} \, dx.
+$$
+
+For a Gaussian $\mathcal{N}(\mu,\Sigma)$, the log-likelihood of data $\{x_i\}_{i=1}^m$ is
+
+$$
+\log p(X) = -\frac{m}{2}\log\det(2\pi\Sigma) - \frac{1}{2}\sum_{i=1}^m (x_i-\mu)^\top \Sigma^{-1}(x_i-\mu).
+$$
+
+## PDE Example
+
+Heat equation with initial condition:
+
+$$
+\begin{cases}
+\partial_t u = \alpha \Delta u, & x \in \Omega, \; t>0, \\
+u(x,0) = u_0(x), & x \in \Omega.
+\end{cases}
+$$
+
+The solution in Fourier space is
+
+$$
+\hat{u}(k,t) = e^{-\alpha \|k\|_2^2 t} \hat{u}_0(k).
+$$
+
+## Optimization
+
+Newton step for $f: \mathbb{R}^n \to \mathbb{R}$:
+
+$$
+x_{t+1} = x_t - \left(\nabla^2 f(x_t)\right)^{-1}\nabla f(x_t).
+$$
+
+For constrained optimization with equality constraints $g(x)=0$:
+
+$$
+\nabla f(x) + J_g(x)^\top \lambda = 0, \quad g(x)=0.
+$$
+
+## Complex Analysis
+
+Residue theorem (for isolated singularities $z_k$ inside $\gamma$):
+
+$$
+\oint_{\gamma} f(z)\,dz = 2\pi i \sum_k \mathrm{Res}(f; z_k).
+$$
+
+## Final Note
+
+This page is intentionally dense to serve as a reference template for advanced math
+notation in MDX.

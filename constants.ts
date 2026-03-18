@@ -44,19 +44,19 @@ export const SAINS_DATA: PortfolioItem[] = [
     label: "2025",
     date: "2025-01-12",
     value: "Dynamic",
-    slug: "creative-suite-dashboard",
+    slug: "dynamic",
     category: "sains",
   },
 ];
 
 export const NOTES_DATA: PortfolioItem[] = [
-  // {
-  //   label: "2024",
-  //   date: "2024-08-03",
-  //   value: "exampleee",
-  //   slug: "building-with-",
-  //   category: "notes",
-  // },
+  {
+    label: "2026",
+    date: "2026-03-18",
+    value: "The Big Picture",
+    slug: "the-big-picture",
+    category: "notes",
+  },
 ];
 
 export const CANVAS_DATA: PortfolioItem[] = [
