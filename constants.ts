@@ -60,14 +60,13 @@ export const NOTES_DATA: PortfolioItem[] = [
 ];
 
 export const CANVAS_DATA: PortfolioItem[] = [
-  // this is example code for canvas
-  // {
-  //   label: "2024",
-  //   date: "2024-02-11",
-  //   value: "JUST AN EXAMPLE",
-  //   slug: "generative-art-experiments",
-  //   category: "canvas",
-  // },
+  {
+    label: "2025",
+    date: "2025-01-12",
+    value: "Lagrangian Animation",
+    slug: "lagrangian",
+    category: "canvas",
+  },
 ];
 
 // Combined PROJECT_DATA for backward compatibility

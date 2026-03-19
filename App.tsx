@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "@/pages/HomePage";
 import MDXPage from "@/components/MDXPage";
+import LagrangianAnimation from "@/pages/canvas/LagrangianAnimation";
 
 // Canvas pages - import directly since they are TSX components
 // import GenerativeArtExperiments from "@/pages/canvas/GenerativeArtExperiments";
@@ -39,12 +40,8 @@ const App: React.FC = () => {
         {/* Notes Routes - Dynamic MDX loading */}
         <Route path="/notes/:slug" element={<MDXPage category="notes" />} />
 
-        {/*this is example for the canva code*/}
         {/* Canvas Routes - Static TSX components with animations */}
-        {/*<Route
-          path="/canvas/generative-art-experiments"
-          element={<GenerativeArtExperiments />}
-        />*/}
+        <Route path="/canvas/lagrangian" element={<LagrangianAnimation />} />
 
         {/* 404 */}
         <Route path="*" element={<ComingSoon title="Page Not Found" />} />
