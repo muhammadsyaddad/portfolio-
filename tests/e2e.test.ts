@@ -102,8 +102,8 @@ async function runTests() {
     });
 
     // Test 10: Canvas page loads with animation (TSX component)
-    await test("Canvas page loads (generative-art-experiments)", async () => {
-      await page.goto(`${BASE_URL}/canvas/generative-art-experiments`, {
+    await test("Canvas page loads (lagrangian)", async () => {
+      await page.goto(`${BASE_URL}/canvas/lagrangian`, {
         waitUntil: "networkidle0",
       });
       // Canvas pages should have a back button
@@ -111,13 +111,13 @@ async function runTests() {
       return backButton !== null;
     });
 
-    // Test 11: Canvas page has animated elements (dots)
+    // Test 11: Canvas page has animated elements
     await test("Canvas page has animated elements", async () => {
       // Wait a bit for animation to start
       await new Promise(resolve => setTimeout(resolve, 500));
       const hasElements = await page.evaluate(() => {
-        const dots = document.querySelectorAll('.dot');
-        return dots.length > 0;
+        const particles = document.querySelectorAll(".lagrangian-particle");
+        return particles.length > 0;
       });
       return hasElements;
     });
