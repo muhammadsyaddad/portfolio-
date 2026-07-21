@@ -272,7 +272,7 @@ const HomePage: React.FC = () => {
               </div>
               <div className="mb-12">
                 <h2 className="text-lg font-bold tracking-wider mb-4 opacity-50">
-                  PORTFOLIO
+                  SAINS
                 </h2>
                 {SAINS_DATA.map((item, i) => (
                   <div
