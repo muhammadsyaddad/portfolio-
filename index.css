@@ -209,6 +209,18 @@ html.lenis body {
   margin: 1rem 0;
 }
 
+.blog-content .katex-display {
+  margin: 2.5rem 0;
+  text-align: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+
+.blog-content .katex-display > .katex {
+  text-align: center;
+}
+
 /* =====================================================
    CLICKABLE ITEMS
    ===================================================== */

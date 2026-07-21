@@ -57,6 +57,13 @@ export const NOTES_DATA: PortfolioItem[] = [
     slug: "the-big-picture",
     category: "notes",
   },
+  {
+    label: "2026",
+    date: "2026-07-21",
+    value: "Hamiltonian Derivation No Explanation",
+    slug: "hamiltonian-derivation-no-explanation",
+    category: "notes",
+  },
 ];
 
 export const CANVAS_DATA: PortfolioItem[] = [

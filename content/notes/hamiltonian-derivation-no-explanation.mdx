@@ -1,0 +1,158 @@
+$$
+Energy - Conservation
+$$
+
+$$
+L = \frac{1}{2}\left(m\dot{x}^2 - kx^2\right).
+$$
+
+$$
+L = \frac{1}{2}\left[m\dot{x}^2 - k(t)x^2\right].
+$$
+
+$$
+L = L(q_i, \dot{q}_i, t).
+$$
+
+$$
+\frac{dL}{dt} = \sum_i \left(\frac{\partial L}{\partial q_i}\dot{q}_i + \frac{\partial L}{\partial \dot{q}_i}\ddot{q}_i\right).
+$$
+
+$$
+\frac{dL}{dt} = \sum_i \left(\frac{\partial L}{\partial q_i}\dot{q}_i + \frac{\partial L}{\partial \dot{q}_i}\ddot{q}_i\right) + \frac{\partial L}{\partial t}.
+$$
+
+$$
+\frac{\partial L}{\partial q_i}\dot{q}_i = \dot{p}_i \dot{q}_i.
+$$
+
+$$
+\frac{\partial L}{\partial \dot{q}_i}\ddot{q}_i = p_i \ddot{q}_i.
+$$
+
+$$
+\frac{dL}{dt} = \sum_i \left(\dot{p}_i \dot{q}_i + p_i \ddot{q}_i\right) + \frac{\partial L}{\partial t}.
+$$
+
+$$
+\sum_i \left(\dot{p}_i \dot{q}_i + p_i \ddot{q}_i\right) = \frac{d}{dt}\sum_i \left(p_i \dot{q}_i\right).
+$$
+
+$$
+\frac{dL}{dt} = \frac{d}{dt}\sum_i \left(p_i \dot{q}_i\right) + \frac{\partial L}{\partial t}.
+$$
+
+$$
+\sum_i \left(p_i \dot{q}_i\right) - L = H.
+$$
+
+$$
+\frac{dH}{dt} = -\frac{\partial L}{\partial t}.
+$$
+
+$$
+L = \frac{m}{2}\dot{x}^2 - V(x).
+$$
+
+$$
+p = m\dot{x}.
+$$
+
+$$
+H = (m\dot{x})\dot{x} - \frac{m}{2}\dot{x}^2 + V(x)
+$$
+
+$$
+= m\dot{x}^2 - \frac{m}{2}\dot{x}^2 + V(x)
+$$
+
+$$
+= \frac{m}{2}\dot{x}^2 + V(x).
+$$
+
+$$
+H = p\dot{q} - T + V.
+$$
+
+$$
+= T + V.
+$$
+
+$$
+General-derivation
+$$
+
+$$
+L = L(\{q\}, \{\dot{q}\}) \\
+$$
+
+$$
+H = \sum_i (p_i \dot{q}_i) - L
+$$
+
+$$
+\delta H = \sum_i (p_i \delta \dot{q}_i + \dot{q}_i \delta p_i) - \delta L
+$$
+
+$$
+\delta H = \sum_i \left( p_i \delta \dot{q}_i + \dot{q}_i \delta p_i - \frac{\partial L}{\partial q_i} \delta q_i - \frac{\partial L}{\partial \dot{q}_i} \delta \dot{q}_i \right)
+$$
+
+$$
+----------------------------------
+$$
+
+$$
+\text{In general, Euler-Lagrange and conjugate momentum are defined as:}
+$$
+
+$$
+p_i = \frac{\partial L}{\partial \dot{q}_i} \qquad \text{and} \qquad \dot{p}_i = \frac{\partial L}{\partial q_i}
+$$
+
+$$
+\text{As an example, using a Harmonic Oscillator:}
+$$
+
+$$
+L = \frac{1}{2}m\dot{q}^2 - \frac{1}{2}kq^2
+$$
+
+$$
+\text{Then:}
+$$
+
+$$
+\frac{\partial L}{\partial \dot{q}} = m\dot{q} \qquad \longrightarrow \qquad p = m\dot{q}
+$$
+
+$$
+\frac{\partial L}{\partial q} = -kq \qquad \longrightarrow \qquad \dot{p} = -kq
+$$
+
+$$
+----------------------------------
+$$
+
+$$
+\text{Returning to the general derivation:}
+$$
+
+$$
+\delta H = \sum_i \left( \dot{q}_i \delta p_i - \frac{\partial L}{\partial q_i} \delta q_i \right)
+$$
+
+$$
+\delta H(\{q\}, \{p\}) = \sum_i \left( \frac{\partial H}{\partial p_i} \delta p_i + \frac{\partial H}{\partial q_i} \delta q_i \right)
+$$
+
+$$
+\text{By matching terms for } \delta q_i \text{ and } \delta p_i :
+$$
+
+$$
+\begin{aligned}
+\frac{\partial H}{\partial p_i} &= \dot{q}_i \\
+\frac{\partial H}{\partial q_i} &= -\dot{p}_i , \qquad -\frac{\partial L}{\partial q_i} = -\dot{p}_i \qquad \longrightarrow \qquad \frac{\partial H}{\partial q_i} &= -\frac{\partial L}{\partial q_i}
+\end{aligned}
+$$
