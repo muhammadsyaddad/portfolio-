@@ -47,6 +47,13 @@ export const SAINS_DATA: PortfolioItem[] = [
     slug: "dynamic",
     category: "sains",
   },
+  {
+    label: "2026",
+    date: "2026-07-21",
+    value: "Hamiltonian Derivation No Explanation",
+    slug: "hamiltonian-derivation-no-explanation",
+    category: "sains",
+  },
 ];
 
 export const NOTES_DATA: PortfolioItem[] = [
@@ -55,13 +62,6 @@ export const NOTES_DATA: PortfolioItem[] = [
     date: "2026-03-18",
     value: "The Big Picture",
     slug: "the-big-picture",
-    category: "notes",
-  },
-  {
-    label: "2026",
-    date: "2026-07-21",
-    value: "Hamiltonian Derivation No Explanation",
-    slug: "hamiltonian-derivation-no-explanation",
     category: "notes",
   },
 ];
