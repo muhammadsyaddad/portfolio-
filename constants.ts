@@ -26,6 +26,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 
 export const PROJETCT_PROUDMOST: SocialLink[] = [
   { label: "EVAL", url: "https://github.com/muhammadsyaddad/eval" },
+  { label: "MATHEND", url: "https://mathend.com" },
 ];
 
 export const PERSONAL_DETAILS: PersonalDetail[] = [
@@ -52,6 +53,13 @@ export const SAINS_DATA: PortfolioItem[] = [
     date: "2026-07-21",
     value: "Hamiltonian Derivation No Explanation",
     slug: "hamiltonian-derivation-no-explanation",
+    category: "sains",
+  },
+  {
+    label: "2026",
+    date: "2026-07-22",
+    value: "Analysis Dimension",
+    slug: "analysis-dimension",
     category: "sains",
   },
 ];

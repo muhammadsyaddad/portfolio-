@@ -406,9 +406,7 @@ const HomePage: React.FC = () => {
                 </div>
                 {/*The project proud the most */}
                 <div className="flex flex-col">
-                  <span className="opacity-60 mb-1 text-xs">
-                    THE PROJECT LIKE THE MOSTS
-                  </span>
+                  <span className="opacity-60 mb-1 text-xs">PROJECT</span>
                   <div className="flex gap-3">
                     {PROJETCT_PROUDMOST.map((social, index) => (
                       <a
