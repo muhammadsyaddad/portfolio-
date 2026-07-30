@@ -1,1 +1,154 @@
-after feel
+i just want to write a simple topic about analysis dimension, it can demonstrate when physics equation is wrong is short way (because if u derive it with calculus is gonna be very long proof), and also what i found intresting stuff along the way, we gonna use newton free fall
+
+## 1. Normal Derivation
+
+$$
+\sum F = m \cdot a(t)
+$$
+
+$$
+m \cdot g = m \cdot a(t)
+$$
+
+$$
+a(t) = g
+$$
+
+$$
+\frac{dv}{dt} = g
+$$
+
+$$
+dv = g \, dt
+$$
+
+$$
+\int_{v_0}^{v(t)} dv = \int_0^t g \, dt
+$$
+
+$$
+v(t) - v_0 = g \cdot (t - 0)
+$$
+
+$$
+v(t) = g \cdot t
+$$
+
+$$
+\frac{dy}{dt} = g \cdot t
+$$
+
+$$
+dy = (g \cdot t) \, dt
+$$
+
+$$
+\int_{y_0}^{y(t)} dy = \int_0^t (g \cdot t) \, dt
+$$
+
+$$
+y(t) - y_0 = \left[ \frac{1}{2} g \cdot t^2 \right]_0^t
+$$
+
+$$
+y(t) - y_0 = \frac{1}{2} g \cdot t^2 - 0
+$$
+
+$$
+h = \frac{1}{2} g \cdot t^2
+$$
+
+$$
+2h = g \cdot t^2
+$$
+
+$$
+t^2 = \frac{2h}{g}
+$$
+
+$$
+t = \sqrt{\frac{2h}{g}}
+$$
+
+$$
+t = \sqrt{2} \cdot h^{1/2} \cdot g^{-1/2}
+$$
+
+## 2. Rayleigh's Dimensional Analysis
+
+$$
+
+[t] = T
+$$
+
+$$
+
+[h] = L
+$$
+
+$$
+
+[g] = L \cdot T^{-2}
+$$
+
+$$
+
+[m] = M
+$$
+
+$$
+
+M^0 \cdot L^0 \cdot T^1 = k \cdot [L]^a \cdot [L \cdot T^{-2}]^b \cdot [M]^c
+$$
+
+$$
+
+M^0 \cdot L^0 \cdot T^1 = L^a \cdot (L^b \cdot T^{-2b}) \cdot M^c
+$$
+
+$$
+
+M^0 \cdot L^0 \cdot T^1 = M^c \cdot L^{a+b} \cdot T^{-2b}
+$$
+
+$$
+
+[M]: 0 = c \implies c = 0
+$$
+
+$$
+
+[T]: 1 = -2b \implies b = -\frac{1}{2}
+$$
+
+$$
+
+[L]: 0 = a + b
+$$
+
+$$
+
+0 = a + \left(-\frac{1}{2}\right)
+$$
+
+$$
+
+a = \frac{1}{2}
+$$
+
+$$
+
+t = k \cdot h^{1/2} \cdot g^{-1/2} \cdot m^0
+$$
+
+$$
+
+t = k \cdot h^{1/2} \cdot g^{-1/2} \cdot (1)
+$$
+
+$$
+
+t = k \cdot \sqrt{\frac{h}{g}}
+$$
+
+however, although the methode its more simple there is the price on it such, the methode not precision as calculus does, it seems doesnt work in some condition https://physics.stackexchange.com/questions/278815/what-is-the-justification-for-rayleighs-method-of-dimensional-analysis

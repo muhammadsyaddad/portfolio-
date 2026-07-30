@@ -34,10 +34,8 @@ const TRAIL_SIZE = 70;
 
 const panelStyle = `
   position: absolute;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 12px;
   overflow: hidden;
-  background: radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.25) 65%);
+  background: transparent;
 `;
 
 const vectorLineStyle = `
@@ -164,7 +162,7 @@ const LagrangianAnimation: React.FC = () => {
       font-size: 11px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(120, 234, 255, 0.94);
+      color: rgba(255, 255, 255, 1);
     `;
     eulerLabel.textContent = "Eulerian (fixed x)";
 
@@ -175,9 +173,10 @@ const LagrangianAnimation: React.FC = () => {
       left: 14px;
       font-size: 11px;
       letter-spacing: 0.03em;
-      color: rgba(173, 242, 255, 0.7);
+      color: rgba(255, 255, 255, 0.7);
     `;
-    eulerEq.textContent = "u = u(x, t)  |  observe one place while flow changes";
+    eulerEq.textContent =
+      "u = u(x, t)  |  observe one place while flow changes";
 
     const lagLabel = document.createElement("div");
     lagLabel.style.cssText = `
@@ -187,7 +186,7 @@ const LagrangianAnimation: React.FC = () => {
       font-size: 11px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(255, 184, 87, 0.95);
+      color: rgba(255, 255, 255, 1);
     `;
     lagLabel.textContent = "Lagrangian (moving X(t))";
 
@@ -198,7 +197,7 @@ const LagrangianAnimation: React.FC = () => {
       left: 14px;
       font-size: 11px;
       letter-spacing: 0.03em;
-      color: rgba(255, 213, 147, 0.74);
+      color: rgba(255, 255, 255, 0.7);
     `;
     lagEq.textContent = "dX/dt = u(X, t)  |  follow one fluid parcel";
 
@@ -223,14 +222,12 @@ const LagrangianAnimation: React.FC = () => {
       height: 8px;
       left: -4px;
       top: -4px;
-      border-radius: 50%;
-      background: rgba(120, 234, 255, 0.96);
-      box-shadow: 0 0 14px rgba(120, 234, 255, 0.9);
+      background: rgba(255, 255, 255, 1);
     `;
 
     const eulerProbeVector = document.createElement("div");
     eulerProbeVector.style.cssText = `${vectorLineStyle}
-      background: linear-gradient(90deg, rgba(120, 234, 255, 0.12), rgba(120, 234, 255, 0.95));
+      background: rgba(255, 255, 255, 1);
     `;
 
     const eulerProbeArrow = document.createElement("div");
@@ -242,7 +239,7 @@ const LagrangianAnimation: React.FC = () => {
       height: 0;
       border-top: 4px solid transparent;
       border-bottom: 4px solid transparent;
-      border-left: 7px solid rgba(120, 234, 255, 0.95);
+      border-left: 7px solid rgba(255, 255, 255, 1);
     `;
     eulerProbeVector.appendChild(eulerProbeArrow);
 
@@ -255,7 +252,7 @@ const LagrangianAnimation: React.FC = () => {
       bottom: 12px;
       font-size: 11px;
       letter-spacing: 0.04em;
-      color: rgba(195, 246, 255, 0.86);
+      color: rgba(255, 255, 255, 0.86);
       text-transform: uppercase;
     `;
     eulerProbeReadout.textContent = "u(x0, t) = (0.00, 0.00)";
@@ -263,11 +260,15 @@ const LagrangianAnimation: React.FC = () => {
     const lagTrail = document.createElement("svg");
     lagTrail.setAttribute("viewBox", "0 0 100 100");
     lagTrail.setAttribute("preserveAspectRatio", "none");
-    lagTrail.style.cssText = "position: absolute; inset: 0; width: 100%; height: 100%;";
+    lagTrail.style.cssText =
+      "position: absolute; inset: 0; width: 100%; height: 100%;";
 
-    const lagTrailPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const lagTrailPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path",
+    );
     lagTrailPath.setAttribute("fill", "none");
-    lagTrailPath.setAttribute("stroke", "rgba(255, 184, 87, 0.82)");
+    lagTrailPath.setAttribute("stroke", "rgba(255, 255, 255, 0.85)");
     lagTrailPath.setAttribute("stroke-width", "1.6");
     lagTrailPath.setAttribute("stroke-linecap", "round");
     lagTrailPath.setAttribute("stroke-linejoin", "round");
@@ -282,14 +283,13 @@ const LagrangianAnimation: React.FC = () => {
       left: -5.5px;
       top: -5.5px;
       border-radius: 50%;
-      background: rgba(255, 184, 87, 1);
-      box-shadow: 0 0 16px rgba(255, 184, 87, 0.95);
+      background: rgba(255, 255, 255, 1);
       will-change: transform;
     `;
 
     const highlightedVector = document.createElement("div");
     highlightedVector.style.cssText = `${vectorLineStyle}
-      background: linear-gradient(90deg, rgba(255, 184, 87, 0.2), rgba(255, 184, 87, 1));
+      background: rgba(255, 255, 255, 1);
     `;
     const highlightedArrow = document.createElement("div");
     highlightedArrow.style.cssText = `
@@ -300,7 +300,7 @@ const LagrangianAnimation: React.FC = () => {
       height: 0;
       border-top: 5px solid transparent;
       border-bottom: 5px solid transparent;
-      border-left: 8px solid rgba(255, 184, 87, 1);
+      border-left: 8px solid rgba(255, 255, 255, 1);
     `;
     highlightedVector.appendChild(highlightedArrow);
 
@@ -311,7 +311,7 @@ const LagrangianAnimation: React.FC = () => {
       bottom: 12px;
       font-size: 11px;
       letter-spacing: 0.04em;
-      color: rgba(255, 219, 166, 0.9);
+      color: rgba(255, 255, 255, 0.9);
       text-transform: uppercase;
     `;
     lagReadout.textContent = "X(t) = (0.00, 0.00)";
@@ -329,15 +329,19 @@ const LagrangianAnimation: React.FC = () => {
       white-space: nowrap;
       pointer-events: none;
     `;
-    syncHint.textContent = "Blue probe and orange parcel use the same velocity field u(x, t)";
-
     eulerPanel.append(eulerLabel, eulerEq, eulerLayer, eulerProbeReadout);
     eulerLayer.appendChild(eulerProbeWrap);
 
     lagrangianPanel.append(lagLabel, lagEq, lagrangianLayer, lagReadout);
     lagrangianLayer.append(lagTrail, highlightedVector, highlightedParticle);
 
-    container.append(title, centerDivider, eulerPanel, lagrangianPanel, syncHint);
+    container.append(
+      title,
+      centerDivider,
+      eulerPanel,
+      lagrangianPanel,
+      syncHint,
+    );
     root.appendChild(container);
 
     let eulerWidth = 0;
@@ -359,7 +363,7 @@ const LagrangianAnimation: React.FC = () => {
 
         const vector = document.createElement("div");
         vector.style.cssText = `${vectorLineStyle}
-          background: linear-gradient(90deg, rgba(120, 234, 255, 0.08), rgba(120, 234, 255, 0.72));
+          background: rgba(255, 255, 255, 0.75);
         `;
 
         const marker = document.createElement("div");
@@ -370,7 +374,7 @@ const LagrangianAnimation: React.FC = () => {
           left: -1.5px;
           top: -1.5px;
           border-radius: 50%;
-          background: rgba(120, 234, 255, 0.34);
+          background: rgba(255, 255, 255, 0.4);
         `;
 
         anchor.append(vector, marker);
@@ -406,31 +410,33 @@ const LagrangianAnimation: React.FC = () => {
       };
     };
 
-    const backgroundParticles: Particle[] = Array.from({ length: BACKGROUND_PARTICLES }, () => {
-      const element = document.createElement("div");
-      element.className = "lagrangian-particle";
-      element.style.cssText = `
+    const backgroundParticles: Particle[] = Array.from(
+      { length: BACKGROUND_PARTICLES },
+      () => {
+        const element = document.createElement("div");
+        element.className = "lagrangian-particle";
+        element.style.cssText = `
         position: absolute;
         width: 4px;
         height: 4px;
         left: -2px;
         top: -2px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.78);
-        box-shadow: 0 0 9px rgba(255, 255, 255, 0.42);
+        background: rgba(255, 255, 255, 0.8);
         will-change: transform, opacity;
       `;
-      lagrangianLayer.appendChild(element);
+        lagrangianLayer.appendChild(element);
 
-      return {
-        element,
-        x: 0,
-        y: 0,
-        vx: 0,
-        vy: 0,
-        seed: Math.random() * Math.PI * 2,
-      };
-    });
+        return {
+          element,
+          x: 0,
+          y: 0,
+          vx: 0,
+          vy: 0,
+          seed: Math.random() * Math.PI * 2,
+        };
+      },
+    );
 
     const trackedParticle: Particle = {
       element: highlightedParticle,
@@ -449,7 +455,11 @@ const LagrangianAnimation: React.FC = () => {
       return value;
     };
 
-    const resetParticle = (particle: Particle, halfW: number, halfH: number) => {
+    const resetParticle = (
+      particle: Particle,
+      halfW: number,
+      halfH: number,
+    ) => {
       particle.x = (Math.random() * 2 - 1) * halfW * 0.92;
       particle.y = (Math.random() * 2 - 1) * halfH * 0.92;
       particle.vx = 0;
@@ -476,7 +486,9 @@ const LagrangianAnimation: React.FC = () => {
       lagHalfHeight = lagHeight * 0.36;
 
       for (const particle of backgroundParticles) {
-        const outside = Math.abs(particle.x) > lagHalfWidth || Math.abs(particle.y) > lagHalfHeight;
+        const outside =
+          Math.abs(particle.x) > lagHalfWidth ||
+          Math.abs(particle.y) > lagHalfHeight;
         if (outside || (particle.x === 0 && particle.y === 0)) {
           resetParticle(particle, lagHalfWidth, lagHalfHeight);
         }
@@ -485,8 +497,16 @@ const LagrangianAnimation: React.FC = () => {
       if (!trail.length) {
         resetTracked();
       } else {
-        trackedParticle.x = clamp(trackedParticle.x, -lagHalfWidth * 0.95, lagHalfWidth * 0.95);
-        trackedParticle.y = clamp(trackedParticle.y, -lagHalfHeight * 0.95, lagHalfHeight * 0.95);
+        trackedParticle.x = clamp(
+          trackedParticle.x,
+          -lagHalfWidth * 0.95,
+          lagHalfWidth * 0.95,
+        );
+        trackedParticle.y = clamp(
+          trackedParticle.y,
+          -lagHalfHeight * 0.95,
+          lagHalfHeight * 0.95,
+        );
       }
     };
 
@@ -540,7 +560,9 @@ const LagrangianAnimation: React.FC = () => {
         probe.anchor.style.transform = `translate3d(${eulerCenterX + x}px, ${eulerCenterY + y}px, 0)`;
         probe.vector.style.transform = `rotate(${angle}rad)`;
         probe.vector.style.width = `${length}px`;
-        probe.vector.style.opacity = String(Math.min(0.95, 0.25 + speed * 0.009));
+        probe.vector.style.opacity = String(
+          Math.min(0.95, 0.25 + speed * 0.009),
+        );
       }
 
       const eulerProbeVel = getVelocity(
@@ -584,7 +606,9 @@ const LagrangianAnimation: React.FC = () => {
 
         const speed = Math.hypot(particle.vx, particle.vy);
         particle.element.style.transform = `translate3d(${lagCenterX + particle.x}px, ${lagCenterY + particle.y}px, 0)`;
-        particle.element.style.opacity = String(Math.min(0.95, 0.25 + speed * 0.006));
+        particle.element.style.opacity = String(
+          Math.min(0.95, 0.25 + speed * 0.006),
+        );
       }
 
       const trackedVel = getVelocity(
