@@ -41,13 +41,14 @@ export const PERSONAL_DETAILS: PersonalDetail[] = [
 
 // Portfolio items with slugs for blog navigation
 export const SAINS_DATA: PortfolioItem[] = [
-  {
-    label: "2025",
-    date: "2025-01-12",
-    value: "Dynamic",
-    slug: "dynamic",
-    category: "sains",
-  },
+  //this is for command cuz its really cover all i need for the layout
+  // {
+  //   label: "2025",
+  //   date: "2025-01-12",
+  //   value: "Dynamic",
+  //   slug: "dynamic",
+  //   category: "sains",
+  // },
   {
     label: "2026",
     date: "2026-07-21",

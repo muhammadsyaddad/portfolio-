@@ -73,7 +73,6 @@ const LagrangianAnimation: React.FC = () => {
       white-space: nowrap;
       pointer-events: none;
     `;
-    title.textContent = "Same flow field, two viewpoints";
 
     const eulerPanel = document.createElement("div");
     eulerPanel.style.cssText = `${panelStyle}
@@ -175,9 +174,6 @@ const LagrangianAnimation: React.FC = () => {
       letter-spacing: 0.03em;
       color: rgba(255, 255, 255, 0.7);
     `;
-    eulerEq.textContent =
-      "u = u(x, t)  |  observe one place while flow changes";
-
     const lagLabel = document.createElement("div");
     lagLabel.style.cssText = `
       position: absolute;
@@ -199,7 +195,6 @@ const LagrangianAnimation: React.FC = () => {
       letter-spacing: 0.03em;
       color: rgba(255, 255, 255, 0.7);
     `;
-    lagEq.textContent = "dX/dt = u(X, t)  |  follow one fluid parcel";
 
     const eulerLayer = document.createElement("div");
     eulerLayer.style.cssText = "position: absolute; inset: 0;";
