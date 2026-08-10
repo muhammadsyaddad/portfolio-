@@ -166,6 +166,14 @@ html.lenis body {
   padding-left: 1.5rem;
 }
 
+.blog-content ul {
+  list-style: disc outside;
+}
+
+.blog-content ol {
+  list-style: decimal outside;
+}
+
 .blog-content li {
   margin-bottom: 0.5rem;
   opacity: 0.9;
