@@ -80,6 +80,13 @@ export const NOTES_DATA: PortfolioItem[] = [
     slug: "learning-plan",
     category: "notes",
   },
+  {
+    label: "2026",
+    date: "2026-08-10",
+    value: "Bersyukur",
+    slug: "bersyukur",
+    category: "notes",
+  },
 ];
 
 export const CANVAS_DATA: PortfolioItem[] = [
