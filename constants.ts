@@ -30,8 +30,8 @@ export const PROJETCT_PROUDMOST: SocialLink[] = [
 ];
 
 export const PERSONAL_DETAILS: PersonalDetail[] = [
-  { label: "WHAT I DO", value: "SOFTWARE, ML, MATERIAL(UNDERGRADUATE)" },
-  { label: "STACK", value: "TYPESCRIPT, NEXT.JS, TAILWIND, RUST" },
+  { label: "WHAT I DO ?", value: "SOFTWARE, ML, MATERIAL(UNDERGRADUATE)" },
+  // { label: "STACK", value: "TYPESCRIPT, NEXT.JS, TAILWIND, RUST" },
   {
     label: "CONTACT",
     value: "muhamsyaddad@gmail.com",
