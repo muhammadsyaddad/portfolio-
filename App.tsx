@@ -3,11 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "@/pages/HomePage";
 import MDXPage from "@/components/MDXPage";
 import LagrangianAnimation from "@/pages/canvas/LagrangianAnimation";
-
-// Canvas pages - import directly since they are TSX components
-// import GenerativeArtExperiments from "@/pages/canvas/GenerativeArtExperiments";
-
-// Placeholder component for routes that don't have content yet
 const ComingSoon: React.FC<{ title: string }> = ({ title }) => (
   <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-mono flex items-center justify-center">
     <div className="text-center">
@@ -31,19 +26,10 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Home */}
         <Route path="/" element={<HomePage />} />
-
-        {/* Portfolio Routes - Dynamic MDX loading */}
         <Route path="/sains/:slug" element={<MDXPage category="sains" />} />
-
-        {/* Notes Routes - Dynamic MDX loading */}
         <Route path="/notes/:slug" element={<MDXPage category="notes" />} />
-
-        {/* Canvas Routes - Static TSX components with animations */}
         <Route path="/canvas/lagrangian" element={<LagrangianAnimation />} />
-
-        {/* 404 */}
         <Route path="*" element={<ComingSoon title="Page Not Found" />} />
       </Routes>
     </BrowserRouter>

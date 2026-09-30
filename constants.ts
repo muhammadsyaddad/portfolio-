@@ -16,8 +16,6 @@ export interface SocialLink {
   label: string;
   url: string;
 }
-
-// Social media links - update these with your actual URLs
 export const SOCIAL_LINKS: SocialLink[] = [
   { label: "GITHUB", url: "https://github.com/muhammadsyaddad" },
   { label: "LINKEDIN", url: "https://linkedin.com/in/muhammadsyaddad" },
@@ -39,7 +37,6 @@ export const PERSONAL_DETAILS: PersonalDetail[] = [
   },
 ];
 
-// Portfolio items with slugs for blog navigation
 export const SAINS_DATA: PortfolioItem[] = [
   //this is for command cuz its really cover all i need for the layout
   // {
@@ -75,7 +72,7 @@ export const NOTES_DATA: PortfolioItem[] = [
   },
   {
     label: "2026",
-    date: "2026-08-10",
+    date: "2026-08-09",
     value: "Learning Plan",
     slug: "learning-plan",
     category: "notes",
@@ -85,6 +82,20 @@ export const NOTES_DATA: PortfolioItem[] = [
     date: "2026-08-10",
     value: "Bersyukur",
     slug: "bersyukur",
+    category: "notes",
+  },
+  {
+    label: "2026",
+    date: "2026-09-20",
+    value: "Penlitian Log",
+    slug: "penelitian-log",
+    category: "notes",
+  },
+  {
+    label: "2026",
+    date: "2026-10-01",
+    value: "Kenapa Mate?",
+    slug: "kenapa-mate",
     category: "notes",
   },
 ];
@@ -97,7 +108,13 @@ export const CANVAS_DATA: PortfolioItem[] = [
     slug: "lagrangian",
     category: "canvas",
   },
+  // {
+  //   label: "2025",
+  //   date: "2025-02-12",
+  //   value: "Lagrangian Animation",
+  //   slug: "GenerativeArtExperiments",
+  //   category: "canvas",
+  // },
 ];
 
-// Combined PROJECT_DATA for backward compatibility
 export const PROJECT_DATA = [...SAINS_DATA, ...NOTES_DATA, ...CANVAS_DATA];

@@ -11,7 +11,6 @@ const GenerativeArtExperiments: React.FC = () => {
     const container = containerRef.current;
     container.innerHTML = "";
 
-    // Create grid of dots
     const rows = 15;
     const cols = 20;
     const dots: HTMLDivElement[] = [];
@@ -35,7 +34,6 @@ const GenerativeArtExperiments: React.FC = () => {
       dots.push(dot);
     }
 
-    // Animate dots in wave pattern
     const animation = animate(dots, {
       scale: [1, 2.5, 1],
       opacity: [0.3, 1, 0.3],

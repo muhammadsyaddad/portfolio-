@@ -24,7 +24,6 @@ const HomePage: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // State for hover highlighting
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [activeColumn, setActiveColumn] = useState<string | null>(null);
 
