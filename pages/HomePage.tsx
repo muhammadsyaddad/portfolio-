@@ -279,7 +279,7 @@ const HomePage: React.FC = () => {
                     className="mb-4 text-xs md:text-sm leading-snug tracking-tight"
                   >
                     <Link
-                      to={`/portfolio/${item.slug}`}
+                      to={`/sains/${item.slug}`}
                       className="opacity-90 hover:opacity-100 clickable-item block"
                     >
                       {item.value}
