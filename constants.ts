@@ -30,7 +30,7 @@ export const PROJETCT_PROUDMOST: SocialLink[] = [
 ];
 
 export const PERSONAL_DETAILS: PersonalDetail[] = [
-  { label: "FOCUS", value: "FULL STACK DEV, ML" },
+  { label: "WHAT I DO", value: "SOFTWARE, ML, MATERIAL(UNDERGRADUATE)" },
   { label: "STACK", value: "TYPESCRIPT, NEXT.JS, TAILWIND, RUST" },
   {
     label: "CONTACT",
