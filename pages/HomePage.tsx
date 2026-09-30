@@ -16,7 +16,6 @@ import {
   PROJETCT_PROUDMOST,
   PortfolioItem,
 } from "@/constants";
-
 const HomePage: React.FC = () => {
   // Refs for scroll synchronization
   const dateRef = useRef<HTMLDivElement>(null);
@@ -238,7 +237,7 @@ const HomePage: React.FC = () => {
           <div className="hidden lg:grid lg:col-span-9 xl:col-span-9 grid-cols-[140px_1fr_1fr_1fr] gap-6 text-2xl font-bold tracking-wider">
             <div></div>
             <h2>NOTES</h2>
-            <h2>SAINS</h2>
+            <h2>SCIENCE</h2>
             <h2>CANVAS</h2>
           </div>
         </div>
@@ -272,28 +271,13 @@ const HomePage: React.FC = () => {
               </div>
               <div className="mb-12">
                 <h2 className="text-lg font-bold tracking-wider mb-4 opacity-50">
-                  SAINS
+                  SCIENCE
                 </h2>
                 {SAINS_DATA.map((item, i) => (
                   <div
                     key={i}
                     className="mb-4 text-xs md:text-sm leading-snug tracking-tight"
                   >
-                    {/*<div className="opacity-60 mb-1">{item.label}</div>*/}
-                    {item.label ? (
-                      <div className="opacity-60 mb-1">
-                        <span className="mr-2">{item.label}</span>
-                        {item.date ? (
-                          <span className="text-[10px] tracking-[0.2em] opacity-60">
-                            {item.date}
-                          </span>
-                        ) : null}
-                      </div>
-                    ) : (
-                      <div className="flex-grow flex items-center pr-4">
-                        <div className="w-full border-t border-white h-0" />
-                      </div>
-                    )}
                     <Link
                       to={`/portfolio/${item.slug}`}
                       className="opacity-90 hover:opacity-100 clickable-item block"
@@ -360,7 +344,72 @@ const HomePage: React.FC = () => {
       <footer className="flex-none w-full bg-[var(--bg-color)] z-30 relative">
         <div className="absolute top-0 left-0 w-full h-24 -translate-y-full bg-gradient-to-t from-[var(--bg-color)] to-transparent pointer-events-none" />
         <div className="w-full max-w-[1800px] mx-auto p-6 md:p-12 lg:p-16 pt-2 md:pt-4">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4">
+          <details className="lg:hidden group border-t border-white/20">
+            <summary className="flex items-center justify-end py-4 cursor-pointer list-none">
+              <span className="text-lg transition-transform duration-300 group-open:rotate-180">
+                ↓
+              </span>
+            </summary>
+
+            <div className="grid grid-cols-1 gap-6 pb-6 text-sm leading-snug tracking-tight">
+              {PERSONAL_DETAILS.map((item, index) => (
+                <div key={index} className="flex flex-col">
+                  <span className="opacity-60 mb-1 text-xs">{item.label}</span>
+                  {item.link ? (
+                    <a
+                      href={item.link}
+                      className="opacity-90 font-bold truncate hover:opacity-100 transition-opacity"
+                      target={
+                        item.link.startsWith("mailto:") ? undefined : "_blank"
+                      }
+                      rel="noopener noreferrer"
+                    >
+                      {item.value}
+                    </a>
+                  ) : (
+                    <span className="opacity-90 font-bold truncate">
+                      {item.value}
+                    </span>
+                  )}
+                </div>
+              ))}
+              {/* Social Links */}
+              <div className="flex flex-col">
+                <span className="opacity-60 mb-1 text-xs">SOCIAL</span>
+                <div className="flex gap-3">
+                  {SOCIAL_LINKS.map((social, index) => (
+                    <a
+                      key={index}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="opacity-90 font-bold hover:opacity-100 transition-opacity"
+                    >
+                      {social.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+              {/*The project proud the most */}
+              <div className="flex flex-col">
+                <span className="opacity-60 mb-1 text-xs">PROJECT</span>
+                <div className="flex gap-3">
+                  {PROJETCT_PROUDMOST.map((social, index) => (
+                    <a
+                      key={index}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="opacity-90 font-bold hover:opacity-100 transition-opacity"
+                    >
+                      {social.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </details>
+          <div className="hidden lg:grid grid-cols-12 lg:grid-cols-12 gap-8 lg:gap-4">
             <div className="hidden lg:block lg:col-span-3" aria-hidden="true" />
             <div className="lg:col-span-9 border-t border-white/20 pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm leading-snug tracking-tight">
