@@ -17,21 +17,21 @@ export interface SocialLink {
   url: string;
 }
 export const SOCIAL_LINKS: SocialLink[] = [
-  { label: "GITHUB", url: "https://github.com/muhammadsyaddad" },
-  { label: "LINKEDIN", url: "https://linkedin.com/in/muhammadsyaddad" },
-  { label: "INSTAGRAM", url: "https://instagram.com/muhammadsyaddad" },
+  { label: "GitHub", url: "https://github.com/muhammadsyaddad" },
+  { label: "LinkedIn", url: "https://linkedin.com/in/muhammadsyaddad" },
+  { label: "Instagram", url: "https://instagram.com/muhammadsyaddad" },
 ];
 
 export const PROJETCT_PROUDMOST: SocialLink[] = [
-  { label: "EVAL", url: "https://github.com/muhammadsyaddad/eval" },
-  { label: "MATHEND", url: "https://mathend.com" },
+  { label: "Eval", url: "https://github.com/muhammadsyaddad/eval" },
+  { label: "Mathend", url: "https://mathend.com" },
 ];
 
 export const PERSONAL_DETAILS: PersonalDetail[] = [
-  { label: "WHAT I DO ?", value: "SOFTWARE, ML, MATERIAL(UNDERGRADUATE)" },
+  { label: "What I do?", value: "Software, ML, Materials (undergraduate)" },
   // { label: "STACK", value: "TYPESCRIPT, NEXT.JS, TAILWIND, RUST" },
   {
-    label: "CONTACT",
+    label: "Contact",
     value: "muhamsyaddad@gmail.com",
     link: "mailto:muhamsyaddad@gmail.com",
   },

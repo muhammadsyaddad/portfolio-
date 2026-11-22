@@ -1,12 +1,7 @@
-import React, {
-  useRef,
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Lenis from "lenis";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 import {
   SAINS_DATA,
   NOTES_DATA,
@@ -16,464 +11,379 @@ import {
   PROJETCT_PROUDMOST,
   PortfolioItem,
 } from "@/constants";
+import catImg from "@/assets/cat-staring.png";
+
+const RECEIPT_TITLE = "Muhammad Syaddad";
+
+const CATEGORY_LABELS: Record<PortfolioItem["category"], string> = {
+  notes: "Notes",
+  sains: "Science",
+  canvas: "Canvas",
+};
+
+const CATEGORY_ORDER: PortfolioItem["category"][] = ["notes", "sains", "canvas"];
+
+const toTime = (date?: string) => {
+  if (!date) return NaN;
+  return new Date(date).getTime();
+};
+
+// "YYYY-MM-DD" -> "DD:YY" (song-duration style). Parsed by string split to avoid timezone shift.
+const formatReceiptDate = (date?: string): string => {
+  const match = date?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return "--:--";
+  const [, year, , day] = match;
+  return `${day}:${year.slice(-2)}`;
+};
+
+// --- Motion: subtle receipt "printing" appear ---
+const EASE = [0.22, 1, 0.36, 1] as const;
+const ROW_STAGGER = 0.04;
+const SECTION_STAGGER = 0.06;
+
+const receiptVariants: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: EASE,
+      delayChildren: 0.1,
+      staggerChildren: SECTION_STAGGER,
+    },
+  },
+};
+
+const groupVariants: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: SECTION_STAGGER } },
+};
+
+const listVariants: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: ROW_STAGGER } },
+};
+
+const fadeUpVariants: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } },
+};
+
+// Only scaleX: .receipt-rule keeps its CSS opacity (.35).
+// `custom` = optional explicit delay (seconds), used to sequence after the list.
+const ruleVariants: Variants = {
+  hidden: { scaleX: 0 },
+  show: (delay?: number) => ({
+    scaleX: 1,
+    transition: {
+      duration: 0.6,
+      ease: EASE,
+      ...(delay !== undefined ? { delay } : {}),
+    },
+  }),
+};
+
+// Fade-up with an explicit delay so totals/footer land after the list rows.
+const afterListVariants: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  show: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: EASE, delay },
+  }),
+};
+
+const ExternalLink: React.FC<{ href: string; children: React.ReactNode }> = ({
+  href,
+  children,
+}) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="underline decoration-1 underline-offset-2 decoration-[#1c1a17]/40 hover:opacity-70 transition-opacity"
+  >
+    {children}
+  </a>
+);
+
+// --- Graffiti tag header ---
+// Static rotate/skew/offset live on a plain wrapper span so Motion's transform
+// (scale) on the inner span never overwrites them.
+const SPRAY_STAGGER = 0.15;
+
+const tagVariants: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: SPRAY_STAGGER } },
+};
+
+const sprayVariants: Variants = {
+  hidden: { opacity: 0, scale: 1.15, filter: "blur(6px)" },
+  show: {
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 0.55, ease: EASE },
+  },
+};
+
+const TAG_WORDS = [
+  { text: "Muhammad", offset: "-0.35em", mt: "0" },
+  { text: "Syaddad", offset: "0.45em", mt: "0.12em" },
+] as const;
+
+const catVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.8, rotate: -6 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    rotate: 6,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const GraffitiName: React.FC = () => (
+  <motion.h1
+    aria-label={RECEIPT_TITLE}
+    variants={tagVariants}
+    className="graffiti flex flex-col items-center whitespace-nowrap pt-[0.1em] pb-[0.5em]"
+    style={{ fontSize: "clamp(2.5rem, 12vw, 5.5rem)" }}
+  >
+    <motion.img
+      src={catImg}
+      alt=""
+      aria-hidden="true"
+      variants={catVariants}
+      className="pointer-events-none select-none mb-[0.15em]"
+      style={{ width: "0.8em" }}
+    />
+    <span
+      className="relative inline-block"
+      style={{ transform: "rotate(-4deg)" }}
+    >
+      {TAG_WORDS.map((word) => (
+        <span
+          key={word.text}
+          aria-hidden="true"
+          className="relative block w-fit mx-auto"
+          style={{
+            color: "#111",
+            transform: `translateX(${word.offset})`,
+            marginTop: word.mt,
+          }}
+        >
+          <motion.span variants={sprayVariants} className="inline-block">
+            {word.text}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  </motion.h1>
+);
+
 const HomePage: React.FC = () => {
-  // Refs for scroll synchronization
-  const dateRef = useRef<HTMLDivElement>(null);
-  const portfolioRef = useRef<HTMLDivElement>(null);
-  const notesRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [activeColumn, setActiveColumn] = useState<string | null>(null);
 
-  // Initialize Lenis smooth scroll
+  // Lenis smooth scroll (normal page scroll)
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
     });
-
-    function raf(time: number) {
+    let frame = 0;
+    const raf = (time: number) => {
       lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
+      frame = requestAnimationFrame(raf);
+    };
+    frame = requestAnimationFrame(raf);
     return () => {
+      cancelAnimationFrame(frame);
       lenis.destroy();
     };
   }, []);
 
-  // Sync date column with content columns
-  const syncDateColumn = useCallback(
-    (sourceElement: HTMLDivElement | null, smooth = false) => {
-      if (dateRef.current && sourceElement) {
-        if (smooth) {
-          dateRef.current.scrollTo({
-            behavior: "smooth",
-            top: sourceElement.scrollTop,
-          });
-        } else {
-          dateRef.current.scrollTop = sourceElement.scrollTop;
-        }
-      }
-    },
-    [],
-  );
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    syncDateColumn(e.currentTarget, false);
-  };
-
-  const handleMouseEnter = (
-    ref: React.RefObject<HTMLDivElement | null>,
-    column: string,
-  ) => {
-    syncDateColumn(ref.current, true);
-    setActiveColumn(column);
-    setHoveredIndex(null);
-  };
-
-  const handleMouseLeave = () => {
-    setActiveColumn(null);
-    setHoveredIndex(null);
-  };
-
-  const handleItemHover = (index: number) => {
-    setHoveredIndex(index);
-  };
-
-  const handleItemLeave = () => {
-    setHoveredIndex(null);
-  };
-
-  // Get row class based on hover state
-  const getRowClass = (index: number, isDate = false) => {
-    if (hoveredIndex === null) {
-      return isDate ? "opacity-60" : "opacity-90";
-    }
-    return hoveredIndex === index ? "opacity-100" : "opacity-20";
-  };
-
-  // Shared classes
-  const ROW_CLASS = "h-6 mb-2 flex items-center";
-  const TEXT_CLASS =
-    "text-sm leading-none tracking-tight truncate cursor-pointer transition-all duration-300";
-  const DATE_TEXT_CLASS =
-    "text-[10px] leading-none tracking-[0.2em] opacity-60 truncate";
-  const COL_CLASS =
-    "h-full overflow-y-auto no-scrollbar pb-64 pt-8 pointer-events-auto scroll-smooth";
-
-  const timelineRows = useMemo(() => {
-    type TimelineRow = {
-      key: string;
-      label?: string;
-      date?: string;
-      sains?: PortfolioItem;
-      notes?: PortfolioItem;
-      canvas?: PortfolioItem;
-    };
-
-    const map = new Map<string, TimelineRow>();
-    const order: string[] = [];
-
-    const addItems = (
-      items: PortfolioItem[],
-      column: "notes" | "sains" | "canvas",
-    ) => {
-      items.forEach((item, index) => {
-        const baseKey =
-          item.date || item.label || item.slug || `${column}-${index}`;
-        const key = item.date ? item.date : `${baseKey}-${column}`;
-
-        if (!map.has(key)) {
-          map.set(key, {
-            key,
-            label: item.label,
-            date: item.date,
-          });
-          order.push(key);
-        }
-
-        const row = map.get(key);
-        if (row) {
-          row[column] = item;
-          if (!row.label && item.label) {
-            row.label = item.label;
-          }
-          if (!row.date && item.date) {
-            row.date = item.date;
-          }
-        }
-      });
-    };
-
-    addItems(NOTES_DATA, "notes");
-    addItems(SAINS_DATA, "sains");
-    addItems(CANVAS_DATA, "canvas");
-
-    const rows = order
-      .map((key) => map.get(key))
-      .filter(Boolean) as TimelineRow[];
-
-    rows.sort((a, b) => {
-      const aTime = a.date ? new Date(a.date).getTime() : -Infinity;
-      const bTime = b.date ? new Date(b.date).getTime() : -Infinity;
-      if (Number.isNaN(aTime) && Number.isNaN(bTime)) {
-        return 0;
-      }
-      if (Number.isNaN(aTime)) {
-        return 1;
-      }
-      if (Number.isNaN(bTime)) {
-        return -1;
-      }
+  // All items merged, newest first; missing/invalid dates go last.
+  const items = useMemo(() => {
+    return [...NOTES_DATA, ...SAINS_DATA, ...CANVAS_DATA].sort((a, b) => {
+      const aTime = toTime(a.date);
+      const bTime = toTime(b.date);
+      const aBad = Number.isNaN(aTime);
+      const bBad = Number.isNaN(bTime);
+      if (aBad && bBad) return 0;
+      if (aBad) return 1;
+      if (bBad) return -1;
       return bTime - aTime;
     });
-
-    return rows;
   }, []);
 
-  type TimelineRow = (typeof timelineRows)[number];
-
-  const renderTimelineColumn = (
-    ref: React.RefObject<HTMLDivElement | null>,
-    columnName: "notes" | "sains" | "canvas",
-    getItem: (row: TimelineRow) => PortfolioItem | undefined,
-  ) => (
-    <div
-      ref={ref}
-      onScroll={handleScroll}
-      onMouseEnter={() => handleMouseEnter(ref, columnName)}
-      onMouseLeave={handleMouseLeave}
-      className={COL_CLASS}
-    >
-      {timelineRows.map((row, i) => {
-        const item = getItem(row);
-
-        return (
-          <div key={row.key} className={ROW_CLASS}>
-            {item ? (
-              <Link
-                to={`/${item.category}/${item.slug}`}
-                className={`${TEXT_CLASS} clickable-item ${getRowClass(i)} hover:opacity-100`}
-                onMouseEnter={() => handleItemHover(i)}
-                onMouseLeave={handleItemLeave}
-              >
-                {item.value}
-              </Link>
-            ) : (
-              <span className={`${TEXT_CLASS} cursor-default opacity-40`}>
-                -
-              </span>
-            )}
-          </div>
-        );
-      })}
-    </div>
+  const totalBreakdown = useMemo(
+    () =>
+      CATEGORY_ORDER.map((cat) => ({
+        cat,
+        count: items.filter((item) => item.category === cat).length,
+      }))
+        .filter(({ count }) => count > 0)
+        .map(({ cat, count }) => `${CATEGORY_LABELS[cat]} ${count}`)
+        .join(" · "),
+    [items],
   );
 
+
+  const contact = PERSONAL_DETAILS.find((d) => d.link?.startsWith("mailto:"));
+  const whatIDo = PERSONAL_DETAILS.find((d) => d !== contact);
+
+  const reduceMotion = useReducedMotion();
+  // Moment the last list row starts + a short beat; totals/footer follow it.
+  // (receipt delayChildren 0.1 + ol is 3rd section child + row stagger)
+  const listEnd = 0.1 + 2 * SECTION_STAGGER + items.length * ROW_STAGGER + 0.15;
+
+  const rowOpacity = (index: number) =>
+    hoveredIndex === null || hoveredIndex === index
+      ? "opacity-100"
+      : "opacity-35";
+
   return (
-    <div
-      ref={containerRef}
-      className="h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-mono uppercase overflow-hidden flex flex-col selection:bg-white selection:text-[var(--bg-color)]"
-    >
-      {/* HEADER */}
-      <header className="flex-none w-full max-w-[1800px] mx-auto p-6 md:p-12 lg:p-16 pb-2 md:pb-4 lg:pb-6 z-20 bg-[var(--bg-color)] relative">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-end">
-          <div className="lg:col-span-3 xl:col-span-3">
-            <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-wider inline-block break-words max-w-full">
-              MUHAMMAD SYADDAD
-            </h1>
-          </div>
-          <div className="hidden lg:grid lg:col-span-9 xl:col-span-9 grid-cols-[140px_1fr_1fr_1fr] gap-6 text-2xl font-bold tracking-wider">
-            <div></div>
-            <h2>NOTES</h2>
-            <h2>SCIENCE</h2>
-            <h2>CANVAS</h2>
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 w-full h-12 translate-y-full bg-gradient-to-b from-[var(--bg-color)] to-transparent pointer-events-none z-10" />
-      </header>
+    <div className="paper min-h-screen w-full font-serif">
+      <motion.div
+        className="max-w-[680px] box-content mx-auto px-6 md:px-12 lg:px-16 py-16 md:py-24"
+        variants={receiptVariants}
+        initial={reduceMotion ? false : "hidden"}
+        animate="show"
+      >
+        {/* HEADER */}
+        <motion.header variants={groupVariants}>
+          <GraffitiName />
+          <motion.div
+            variants={groupVariants}
+            className="mt-10 text-base leading-relaxed"
+          >
+            <motion.blockquote variants={fadeUpVariants} className="italic">
+              “If you want to find the secrets of the universe, think in terms
+              of energy, frequency and vibration.”
+            </motion.blockquote>
+            <motion.p variants={fadeUpVariants} className="mt-2 opacity-70">
+              ― Nikola Tesla
+            </motion.p>
+          </motion.div>
+        </motion.header>
 
-      {/* MAIN CONTENT */}
-      <main className="flex-grow overflow-hidden min-h-0 w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-16 relative z-0">
-        <div className="h-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4">
-          <div className="hidden lg:block lg:col-span-3" aria-hidden="true" />
-          <div className="lg:col-span-9 h-full min-h-0 relative">
-            {/* MOBILE (< lg) */}
-            <div className={`lg:hidden ${COL_CLASS}`}>
-              <div className="mb-12">
-                <h2 className="text-lg font-bold tracking-wider mb-4 opacity-50">
-                  NOTES
-                </h2>
-                {NOTES_DATA.map((item, i) => (
-                  <div
-                    key={i}
-                    className="mb-4 text-xs md:text-sm leading-snug tracking-tight"
-                  >
-                    <Link
-                      to={`/notes/${item.slug}`}
-                      className="opacity-90 hover:opacity-100 clickable-item block"
-                    >
-                      {item.value}
-                    </Link>
-                  </div>
-                ))}
-              </div>
-              <div className="mb-12">
-                <h2 className="text-lg font-bold tracking-wider mb-4 opacity-50">
-                  SCIENCE
-                </h2>
-                {SAINS_DATA.map((item, i) => (
-                  <div
-                    key={i}
-                    className="mb-4 text-xs md:text-sm leading-snug tracking-tight"
-                  >
-                    <Link
-                      to={`/sains/${item.slug}`}
-                      className="opacity-90 hover:opacity-100 clickable-item block"
-                    >
-                      {item.value}
-                    </Link>
-                  </div>
-                ))}
-              </div>
-              <div className="mb-12">
-                <h2 className="text-lg font-bold tracking-wider mb-4 opacity-50">
-                  CANVAS
-                </h2>
-                {CANVAS_DATA.map((item, i) => (
-                  <div
-                    key={i}
-                    className="mb-4 text-xs md:text-sm leading-snug tracking-tight"
-                  >
-                    <Link
-                      to={`/canvas/${item.slug}`}
-                      className="opacity-90 hover:opacity-100 clickable-item block"
-                    >
-                      {item.value}
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <motion.hr
+          className="receipt-rule"
+          style={{ originX: 0 }}
+          variants={ruleVariants}
+        />
 
-            {/* DESKTOP (>= lg) */}
-            <div className="hidden lg:grid h-full grid-cols-[140px_1fr_1fr_1fr] gap-6">
-              {/* DATE COLUMN */}
+        {/* ITEMS */}
+        <motion.ol
+          variants={listVariants}
+          onMouseLeave={() => setHoveredIndex(null)}
+        >
+          {items.map((item, i) => (
+            // motion.li owns the appear opacity; the inner div owns the hover
+            // fade (Tailwind opacity class) so the two never fight.
+            <motion.li
+              key={`${item.category}-${item.slug}`}
+              variants={fadeUpVariants}
+              onMouseEnter={() => setHoveredIndex(i)}
+            >
               <div
-                ref={dateRef}
-                className={COL_CLASS}
-                onMouseEnter={() => setActiveColumn("date")}
+                className={`flex items-baseline gap-4 py-1.5 transition-opacity duration-300 ${rowOpacity(i)}`}
               >
-                {timelineRows.map((row, i) => (
-                  <div key={i} className={ROW_CLASS}>
-                    {/* Jika item.label ada, tampilkan label. Jika tidak, tampilkan garis */}
-                    <div className="flex items-center justify-end w-full gap-4">
-                      <span className={DATE_TEXT_CLASS}>
-                        {row.date ? row.date : "-"}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                <div className="min-w-0 flex-1">
+                  <Link
+                    to={`/${item.category}/${item.slug}`}
+                    className="text-lg leading-snug hover:underline underline-offset-2 decoration-1"
+                  >
+                    {item.value}
+                  </Link>
+                  <span className="hidden sm:inline ml-2 text-sm opacity-55">
+                    {CATEGORY_LABELS[item.category]}
+                  </span>
+                </div>
+                <span className="shrink-0 text-right tabular-nums text-base opacity-80">
+                  {formatReceiptDate(item.date)}
+                </span>
               </div>
+            </motion.li>
+          ))}
+        </motion.ol>
 
-              {/* NOTES COLUMN */}
-              {renderTimelineColumn(notesRef, "notes", (row) => row.notes)}
+        <motion.hr
+          className="receipt-rule"
+          style={{ originX: 0 }}
+          variants={ruleVariants}
+          custom={listEnd}
+        />
 
-              {/* PORTFOLIO COLUMN */}
-              {renderTimelineColumn(portfolioRef, "sains", (row) => row.sains)}
-
-              {/* CANVAS COLUMN */}
-              {renderTimelineColumn(canvasRef, "canvas", (row) => row.canvas)}
-            </div>
+        {/* TOTALS */}
+        <motion.div
+          className="text-base leading-relaxed"
+          variants={afterListVariants}
+          custom={listEnd + 0.1}
+        >
+          <div className="flex justify-between gap-4">
+            <span>Item count:</span>
+            <span className="tabular-nums text-right">{items.length}</span>
           </div>
-        </div>
-      </main>
+          <div className="flex justify-between gap-4">
+            <span>Total:</span>
+            <span className="tabular-nums text-right">{totalBreakdown}</span>
+          </div>
+        </motion.div>
 
-      {/* FOOTER */}
-      <footer className="flex-none w-full bg-[var(--bg-color)] z-30 relative">
-        <div className="absolute top-0 left-0 w-full h-24 -translate-y-full bg-gradient-to-t from-[var(--bg-color)] to-transparent pointer-events-none" />
-        <div className="w-full max-w-[1800px] mx-auto p-6 md:p-12 lg:p-16 pt-2 md:pt-4">
-          <details className="lg:hidden group border-t border-white/20">
-            <summary className="flex items-center justify-end py-4 cursor-pointer list-none">
-              <span className="text-lg transition-transform duration-300 group-open:rotate-180">
-                ↓
+        <motion.hr
+          className="receipt-rule"
+          style={{ originX: 0 }}
+          variants={ruleVariants}
+          custom={listEnd + 0.2}
+        />
+
+        {/* FOOTER */}
+        <motion.footer
+          variants={afterListVariants}
+          custom={listEnd + 0.3}
+          className="grid grid-cols-[6.5rem_1fr] sm:grid-cols-[8rem_1fr] gap-x-4 gap-y-1 text-base leading-relaxed">
+          {whatIDo && (
+            <>
+              <span>What I do:</span>
+              <span>{whatIDo.value}</span>
+            </>
+          )}
+          {contact && (
+            <>
+              <span>Contact:</span>
+              <span className="break-all">
+                <a
+                  href={contact.link}
+                  className="underline decoration-1 underline-offset-2 decoration-[#1c1a17]/40 hover:opacity-70 transition-opacity"
+                >
+                  {contact.value}
+                </a>
               </span>
-            </summary>
-
-            <div className="grid grid-cols-1 gap-6 pb-6 text-sm leading-snug tracking-tight">
-              {PERSONAL_DETAILS.map((item, index) => (
-                <div key={index} className="flex flex-col">
-                  <span className="opacity-60 mb-1 text-xs">{item.label}</span>
-                  {item.link ? (
-                    <a
-                      href={item.link}
-                      className="opacity-90 font-bold truncate hover:opacity-100 transition-opacity"
-                      target={
-                        item.link.startsWith("mailto:") ? undefined : "_blank"
-                      }
-                      rel="noopener noreferrer"
-                    >
-                      {item.value}
-                    </a>
-                  ) : (
-                    <span className="opacity-90 font-bold truncate">
-                      {item.value}
-                    </span>
-                  )}
-                </div>
-              ))}
-              {/* Social Links */}
-              <div className="flex flex-col">
-                <span className="opacity-60 mb-1 text-xs">SOCIAL</span>
-                <div className="flex gap-3">
-                  {SOCIAL_LINKS.map((social, index) => (
-                    <a
-                      key={index}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="opacity-90 font-bold hover:opacity-100 transition-opacity"
-                    >
-                      {social.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-              {/*The project proud the most */}
-              <div className="flex flex-col">
-                <span className="opacity-60 mb-1 text-xs">PROJECT</span>
-                <div className="flex gap-3">
-                  {PROJETCT_PROUDMOST.map((social, index) => (
-                    <a
-                      key={index}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="opacity-90 font-bold hover:opacity-100 transition-opacity"
-                    >
-                      {social.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </details>
-          <div className="hidden lg:grid grid-cols-12 lg:grid-cols-12 gap-8 lg:gap-4">
-            <div className="hidden lg:block lg:col-span-3" aria-hidden="true" />
-            <div className="lg:col-span-9 border-t border-white/20 pt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm leading-snug tracking-tight">
-                {PERSONAL_DETAILS.map((item, index) => (
-                  <div key={index} className="flex flex-col">
-                    <span className="opacity-60 mb-1 text-xs">
-                      {item.label}
-                    </span>
-                    {item.link ? (
-                      <a
-                        href={item.link}
-                        className="opacity-90 font-bold truncate hover:opacity-100 transition-opacity"
-                        target={
-                          item.link.startsWith("mailto:") ? undefined : "_blank"
-                        }
-                        rel="noopener noreferrer"
-                      >
-                        {item.value}
-                      </a>
-                    ) : (
-                      <span className="opacity-90 font-bold truncate">
-                        {item.value}
-                      </span>
-                    )}
-                  </div>
-                ))}
-                {/* Social Links */}
-                <div className="flex flex-col">
-                  <span className="opacity-60 mb-1 text-xs">SOCIAL</span>
-                  <div className="flex gap-3">
-                    {SOCIAL_LINKS.map((social, index) => (
-                      <a
-                        key={index}
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="opacity-90 font-bold hover:opacity-100 transition-opacity"
-                      >
-                        {social.label}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-                {/*The project proud the most */}
-                <div className="flex flex-col">
-                  <span className="opacity-60 mb-1 text-xs">PROJECT</span>
-                  <div className="flex gap-3">
-                    {PROJETCT_PROUDMOST.map((social, index) => (
-                      <a
-                        key={index}
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="opacity-90 font-bold hover:opacity-100 transition-opacity"
-                      >
-                        {social.label}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+            </>
+          )}
+          <span>Social:</span>
+          <span>
+            {SOCIAL_LINKS.map((s, i) => (
+              <React.Fragment key={s.url}>
+                {i > 0 && " · "}
+                <ExternalLink href={s.url}>{s.label}</ExternalLink>
+              </React.Fragment>
+            ))}
+          </span>
+          <span>Project:</span>
+          <span>
+            {PROJETCT_PROUDMOST.map((p, i) => (
+              <React.Fragment key={p.url}>
+                {i > 0 && " · "}
+                <ExternalLink href={p.url}>{p.label}</ExternalLink>
+              </React.Fragment>
+            ))}
+          </span>
+        </motion.footer>
+      </motion.div>
     </div>
   );
 };

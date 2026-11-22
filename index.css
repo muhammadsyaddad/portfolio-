@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400&family=JetBrains+Mono:wght@400;700&display=swap");
 
 /* =====================================================
    DARK BACKGROUND OPTIONS
@@ -50,7 +50,20 @@
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-family: "JetBrains Mono", monospace;
+  font-family: "Newsreader", Georgia, serif;
+  /* match darioamodei.com: static Newsreader 24pt cut, not auto optical size */
+  font-variation-settings: "opsz" 24;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Newsreader", Georgia, serif;
+  font-weight: 700;
+  line-height: 1.15;
 }
 
 /* =====================================================
@@ -78,85 +91,39 @@ html.lenis body {
 }
 
 /* =====================================================
-   HIDE SCROLLBAR
-   ===================================================== */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.no-scrollbar {
-  scroll-behavior: smooth;
-  overscroll-behavior: contain;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* =====================================================
-   CONTENT FADE EFFECT (for non-hovered items)
-   ===================================================== */
-.content-column {
-  transition: opacity 0.3s ease;
-}
-
-.content-row {
-  transition: opacity 0.3s ease, transform 0.2s ease;
-}
-
-.content-row.faded {
-  opacity: 0.2 !important;
-}
-
-.content-row.highlighted {
-  opacity: 1 !important;
-}
-
-/* Date column highlight effect */
-.date-row {
-  transition: opacity 0.3s ease;
-}
-
-.date-row.faded {
-  opacity: 0.2 !important;
-}
-
-.date-row.highlighted {
-  opacity: 1 !important;
-}
-
-/* =====================================================
    BLOG POST STYLES
    ===================================================== */
 .blog-content {
-  max-width: 800px;
+  max-width: 680px;
   margin: 0 auto;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  overflow-wrap: break-word;
 }
 
 .blog-content h1 {
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 2.4em;
+  font-weight: 700;
   margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .blog-content h2 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: 2rem;
+  font-size: 1.6em;
+  font-weight: 700;
+  margin-top: 2.5rem;
   margin-bottom: 1rem;
-  text-transform: uppercase;
 }
 
 .blog-content h3 {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-top: 1.5rem;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin-top: 2rem;
   margin-bottom: 0.75rem;
 }
 
 .blog-content p {
-  margin-bottom: 1rem;
-  line-height: 1.75;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
   opacity: 0.9;
 }
 
@@ -230,18 +197,6 @@ html.lenis body {
 }
 
 /* =====================================================
-   CLICKABLE ITEMS
-   ===================================================== */
-.clickable-item {
-  cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.clickable-item:hover {
-  transform: translateX(4px);
-}
-
-/* =====================================================
    BACK BUTTON
    ===================================================== */
 .back-button {
@@ -250,4 +205,57 @@ html.lenis body {
 
 .back-button:hover {
   transform: translateX(-4px);
+}
+
+/* =====================================================
+   RECEIPT HOMEPAGE (paper)
+   ===================================================== */
+.paper {
+  --paper-color: #e9e2d3;
+  --ink-color: #1c1a17;
+  color: var(--ink-color);
+  background-color: var(--paper-color);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.10 0 0 0 0 0.09 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 900' preserveAspectRatio='none'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.004' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.30 0 0 0 0 0.22 0 0 0 0.9 -0.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)' opacity='0.22'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 18% 12%, rgba(255, 252, 244, 0.55), transparent 55%),
+    radial-gradient(ellipse at 85% 78%, rgba(120, 100, 70, 0.12), transparent 60%),
+    linear-gradient(115deg, transparent 40%, rgba(90, 75, 50, 0.05) 50%, transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(80, 65, 40, 0.06));
+  background-size: 240px 240px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+}
+
+.paper ::selection {
+  background-color: var(--ink-color);
+  color: var(--paper-color);
+}
+
+/* keep overscroll / rubber-band area paper-coloured on the homepage */
+body:has(.paper) {
+  background-color: #e9e2d3;
+}
+
+.receipt-rule {
+  border: 0;
+  border-top: 1px dashed currentColor;
+  opacity: 0.35;
+  margin: 1.25rem 0;
+}
+
+/* graffiti tag header (homepage) — Fat Wandals by Måns Grebäck, PERSONAL USE license */
+@font-face {
+  font-family: "Fat Wandals";
+  src: url("./fonts/FatWandals.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.graffiti {
+  font-family: "Fat Wandals", cursive;
+  font-weight: 400;
+  font-synthesis: none;
+  font-feature-settings: "calt" 1, "liga" 1;
+  line-height: 1;
 }

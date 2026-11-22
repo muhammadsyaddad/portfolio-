@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { motion, useReducedMotion } from "motion/react";
 import { NOTES_DATA, SAINS_DATA } from "@/constants";
 
 // Import all MDX files dynamically
@@ -19,6 +20,7 @@ const MDXPage: React.FC<MDXPageProps> = ({ category }) => {
   const [Content, setContent] = useState<React.ComponentType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const loadMDX = async () => {
@@ -48,8 +50,8 @@ const MDXPage: React.FC<MDXPageProps> = ({ category }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-mono flex items-center justify-center">
-        <div className="text-sm uppercase tracking-wider opacity-60">
+      <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-serif flex items-center justify-center">
+        <div className="text-sm opacity-60">
           Loading...
         </div>
       </div>
@@ -58,17 +60,17 @@ const MDXPage: React.FC<MDXPageProps> = ({ category }) => {
 
   if (error || !Content) {
     return (
-      <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-mono flex items-center justify-center">
+      <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-serif flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold tracking-wider mb-4 uppercase">
+          <h1 className="text-2xl font-bold mb-4">
             Content Not Found
           </h1>
-          <p className="opacity-60 uppercase tracking-wider text-sm mb-8">
+          <p className="opacity-60 text-sm mb-8">
             This page doesn't exist yet
           </p>
           <Link
             to="/"
-            className="text-sm opacity-60 hover:opacity-100 uppercase tracking-wider transition-opacity"
+            className="text-sm opacity-60 hover:opacity-100 transition-opacity"
           >
             &larr; Back to Home
           </Link>
@@ -80,44 +82,49 @@ const MDXPage: React.FC<MDXPageProps> = ({ category }) => {
   const items = category === "sains" ? SAINS_DATA : NOTES_DATA;
   const currentItem = items.find((item) => item.slug === slug);
   const title =
-    currentItem?.value || slug?.replace(/-/g, " ").toUpperCase() || "";
+    currentItem?.value || slug?.replace(/-/g, " ") || "";
   const date = currentItem?.date || "";
 
   return (
-    <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-mono">
+    <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-serif">
+      <motion.div
+        initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      >
       {/* Header */}
-      <header className="w-full max-w-[1200px] mx-auto p-6 md:p-12 lg:p-16">
+      <header className="max-w-[680px] box-content mx-auto p-6 md:p-12 lg:p-16">
         <div className="mb-8">
-          <span className="text-xs opacity-50 uppercase tracking-wider">
-            {category}
+          <span className="text-xs opacity-50">
+            {category === "sains" ? "Science" : "Notes"}
           </span>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-wider mt-2 uppercase">
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight mt-2">
             {title}
           </h1>
           {date ? (
-            <div className="mt-4 text-xs opacity-50 uppercase tracking-wider">
+            <div className="mt-4 text-xs opacity-50">
               {date}
             </div>
           ) : null}
-          <div className="mt-6 border-t border-white/20" />
         </div>
       </header>
 
       {/* Content */}
-      <main className="w-full max-w-[1200px] mx-auto px-6 md:px-12 lg:px-16 pb-16">
+      <main className="max-w-[680px] box-content mx-auto px-6 md:px-12 lg:px-16 pb-16">
         <article className="blog-content prose prose-invert max-w-none">
           <Content />
         </article>
       </main>
+      </motion.div>
 
       {/* Footer */}
-      <footer className="w-full max-w-[1200px] mx-auto p-6 md:p-12 lg:p-16 border-t border-white/10">
+      <footer className="max-w-[680px] box-content mx-auto p-6 md:p-12 lg:p-16">
         <Link
           to="/"
-          className="back-button inline-flex items-center text-sm opacity-60 hover:opacity-100 uppercase tracking-wider"
+          className="back-button inline-flex items-center text-sm opacity-60 hover:opacity-100"
         >
           <span className="mr-2">&larr;</span>
-          BACK TO HOME
+          Back to home
         </Link>
       </footer>
     </div>

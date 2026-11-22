@@ -4,17 +4,17 @@ import HomePage from "@/pages/HomePage";
 import MDXPage from "@/components/MDXPage";
 import LagrangianAnimation from "@/pages/canvas/LagrangianAnimation";
 const ComingSoon: React.FC<{ title: string }> = ({ title }) => (
-  <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-mono flex items-center justify-center">
+  <div className="min-h-screen w-full bg-[var(--bg-color)] text-[var(--text-color)] font-serif flex items-center justify-center">
     <div className="text-center">
-      <h1 className="text-2xl font-bold tracking-wider mb-4 uppercase">
+      <h1 className="text-2xl font-bold mb-4">
         {title}
       </h1>
-      <p className="opacity-60 uppercase tracking-wider text-sm mb-8">
+      <p className="opacity-60 text-sm mb-8">
         Content coming soon
       </p>
       <a
         href="/"
-        className="text-sm opacity-60 hover:opacity-100 uppercase tracking-wider transition-opacity"
+        className="text-sm opacity-60 hover:opacity-100 transition-opacity"
       >
         &larr; Back to Home
       </a>
