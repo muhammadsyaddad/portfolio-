@@ -348,13 +348,13 @@ const HomePage: React.FC = () => {
           {whatIDo && (
             <>
               <span>What I do:</span>
-              <span>{whatIDo.value}</span>
+              <span className="text-right">{whatIDo.value}</span>
             </>
           )}
           {contact && (
             <>
               <span>Contact:</span>
-              <span className="break-all">
+              <span className="break-all text-right">
                 <a
                   href={contact.link}
                   className="underline decoration-1 underline-offset-2 decoration-[#1c1a17]/40 hover:opacity-70 transition-opacity"
@@ -365,7 +365,7 @@ const HomePage: React.FC = () => {
             </>
           )}
           <span>Social:</span>
-          <span>
+          <span className="text-right">
             {SOCIAL_LINKS.map((s, i) => (
               <React.Fragment key={s.url}>
                 {i > 0 && " · "}
@@ -374,7 +374,7 @@ const HomePage: React.FC = () => {
             ))}
           </span>
           <span>Project:</span>
-          <span>
+          <span className="text-right">
             {PROJETCT_PROUDMOST.map((p, i) => (
               <React.Fragment key={p.url}>
                 {i > 0 && " · "}

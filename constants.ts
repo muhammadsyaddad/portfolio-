@@ -25,6 +25,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 export const PROJETCT_PROUDMOST: SocialLink[] = [
   { label: "Eval", url: "https://github.com/muhammadsyaddad/eval" },
   { label: "Mathend", url: "https://mathend.com" },
+  { label: "Buzzer", url: "https://probowo.vercel.app/" },
 ];
 
 export const PERSONAL_DETAILS: PersonalDetail[] = [
